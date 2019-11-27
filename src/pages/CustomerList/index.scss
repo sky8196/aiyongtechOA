@@ -1,0 +1,13 @@
+#topmain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  margin-bottom:10px;
+}
+#main{
+  background-color: white;
+}
+.topmain-left>*{
+  margin: 0 10px;
+}

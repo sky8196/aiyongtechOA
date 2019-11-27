@@ -1,0 +1,29 @@
+.blueText {
+  color: #2280FB
+}
+
+.greenText {
+  color: #39DA90
+}
+
+.redText {
+  color: #FF2424
+}
+
+
+.border {
+  border: 1px solid #eaeaea
+}
+
+.grayText {
+  color: #999999
+}
+.margin{
+  margin: 10px;
+}
+.router-box{
+  padding: 10px 0;
+}
+body{
+  background-color:#fafafa !important;
+}

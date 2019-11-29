@@ -48,15 +48,15 @@ export async function deleteMyCustomer(id) {
  * @author zhuoyue
  */
 export async function updateCustomer(parames) {
-  const {data}=parames;
-  return request('http://szhtonpal.aiyongbao.com//api', {
-    method: 'POST',
-    data: {
-      method: 'aiyong.foreigntrade.ca.updateCustomer',
-      namespace: 'ss',
-      data:JSON.stringify(data),
-    },
-  });
+    const { data } = parames;
+    return request('http://szhtonpal.aiyongbao.com//api', {
+        method: 'POST',
+        data: {
+            method: 'aiyong.foreigntrade.ca.updateCustomer',
+            namespace: 'ss',
+            data: JSON.stringify(data),
+        },
+    });
 }
 /**
  * updateCustomerState [修改客户状态]
@@ -64,14 +64,14 @@ export async function updateCustomer(parames) {
  * @author zhuoyue
  */
 export async function updateCustomerState(parames) {
-  return request('http://szhtonpal.aiyongbao.com//api', {
-    method: 'POST',
-    data: {
-      method: 'aiyong.foreigntrade.ca.updateCustomerState',
-      namespace: 'ss',
-      data:JSON.stringify(parames),
-    },
-  });
+    return request('http://szhtonpal.aiyongbao.com//api', {
+        method: 'POST',
+        data: {
+            method: 'aiyong.foreigntrade.ca.updateCustomerState',
+            namespace: 'ss',
+            data: JSON.stringify(parames),
+        },
+    });
 }
 /**
  * releaseCustomer [释放用户到公海]
@@ -79,14 +79,14 @@ export async function updateCustomerState(parames) {
  * @author zhuoyue
  */
 export async function releaseCustomer(parames) {
-  return request('http://szhtonpal.aiyongbao.com//api', {
-    method: 'POST',
-    data: {
-      method: 'aiyong.foreigntrade.ca.releaseCustomer',
-      namespace: 'ss',
-      data:JSON.stringify(parames),
-    },
-  });
+    return request('http://szhtonpal.aiyongbao.com//api', {
+        method: 'POST',
+        data: {
+            method: 'aiyong.foreigntrade.ca.releaseCustomer',
+            namespace: 'ss',
+            data: JSON.stringify(parames),
+        },
+    });
 }
 /**
  * pushToMyCustomer [释放用户到公海]
@@ -94,13 +94,27 @@ export async function releaseCustomer(parames) {
  * @author zhuoyue
  */
 export async function pushToMyCustomer(parames) {
-  return request('http://szhtonpal.aiyongbao.com//api', {
-    method: 'POST',
-    data: {
-      method: 'aiyong.foreigntrade.ca.pushToMyCustomer',
-      namespace: 'ss',
-      data:JSON.stringify(parames),
-    },
-  });
+    return request('http://szhtonpal.aiyongbao.com//api', {
+        method: 'POST',
+        data: {
+            method: 'aiyong.foreigntrade.ca.pushToMyCustomer',
+            namespace: 'ss',
+            data: JSON.stringify(parames),
+        },
+    });
 }
-
+/**
+ * searchCustomer [释放用户到公海]
+ * @param parames [数据]
+ * @author zhuoyue
+ */
+export async function searchCustomer(parames) {
+    return request('http://szhtonpal.aiyongbao.com//api', {
+        method: 'POST',
+        data: {
+            method: 'aiyong.foreigntrade.ca.searchCustomer',
+            namespace: 'ss',
+            data: JSON.stringify(parames),
+        },
+    });
+}

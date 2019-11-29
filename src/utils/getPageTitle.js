@@ -6,7 +6,7 @@ import { menu, title } from '../defaultSettings';
 
 /** */
 export const matchParamsPath = (pathname, breadcrumbNameMap) => {
-    const pathKey = Object.keys(breadcrumbNameMap).find(key => pathToRegexp(key).test(pathname));
+    const pathKey = Object.keys(breadcrumbNameMap).find((key) => pathToRegexp(key).test(pathname));
     return breadcrumbNameMap[pathKey];
 };
 

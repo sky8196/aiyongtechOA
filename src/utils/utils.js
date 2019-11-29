@@ -100,9 +100,9 @@ function getRenderArr(routes) {
     renderArr.push(routes[0]);
     for (let i = 1; i < routes.length; i += 1) {
     // 去重
-        renderArr = renderArr.filter(item => getRelation(item, routes[i]) !== 1);
+        renderArr = renderArr.filter((item) => getRelation(item, routes[i]) !== 1);
         // 是否包含
-        const isAdd = renderArr.every(item => getRelation(item, routes[i]) === 3);
+        const isAdd = renderArr.every((item) => getRelation(item, routes[i]) === 3);
         if (isAdd) {
             renderArr.push(routes[i]);
         }
@@ -118,15 +118,15 @@ function getRenderArr(routes) {
  */
 export function getRoutes(path, routerData) {
     let routes = Object.keys(routerData).filter(
-        routePath => routePath.indexOf(path) === 0 && routePath !== path,
+        (routePath) => routePath.indexOf(path) === 0 && routePath !== path,
     );
     // Replace path to '' eg. path='user' /user/name => name
-    routes = routes.map(item => item.replace(path, ''));
+    routes = routes.map((item) => item.replace(path, ''));
     // Get the route to be rendered to remove the deep rendering
     const renderArr = getRenderArr(routes);
     // Conversion and stitching parameters
     const renderRoutes = renderArr.map((item) => {
-        const exact = !routes.some(route => route !== item && getRelation(route, item) === 1);
+        const exact = !routes.some((route) => route !== item && getRelation(route, item) === 1);
         return {
             exact,
             ...routerData[`${path}${item}`],

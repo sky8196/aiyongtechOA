@@ -9,7 +9,7 @@ export async function hasRegister(name) {
         data: {
             method: 'aiyong.foreigntrade.ca.hasRegister',
             namespace: 'ss',
-            name: name,
+            name,
         },
     });
 }

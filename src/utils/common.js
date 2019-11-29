@@ -1,4 +1,3 @@
-import { releaseBtn } from '@/services/getorderList';
 /**
  * isEmpty [判断一个值是否为空]
  * @author Terrence
@@ -10,11 +9,13 @@ export function isEmpty(key) {
     if (type == 'undefined' || type == 'null') return true;
     if (type == 'string') {
         const res = key.replace(/(^\s*)|(\s*$)/g, '');
-        if (res == '' || res == null || res == 'null' || res == undefined || res == 'undefined') { return true; }
+        if (res == '' || res == null || res == 'null' || res == undefined || res == 'undefined') {
+            return true;
+        }
         return false;
     }
     if (type == 'object') {
-    /** 数组或者对象 */
+        /** 数组或者对象 */
         if (key == null) return true;
         if (Object.keys(key).length > 0) return false;
         return true;
@@ -50,7 +51,7 @@ export function jsonDecode(json = '', defaultValue = []) {
  */
 export function emptyOrBlank(object, key, defaultValue = '', isJson = false) {
     if (Object.prototype.hasOwnProperty.call(object, key) && !isEmpty(object[key])) {
-    /** 若是键存在且键值不为空 */
+        /** 若是键存在且键值不为空 */
         if (isJson) {
             /** 若是要解json */
             return jsonDecode(object[key], defaultValue);
@@ -104,7 +105,7 @@ export function getRandomColor() {
  */
 export function filterPlatForm(item) {
     const result = {};
-    if (typeof (item) == 'string') {
+    if (typeof item == 'string') {
         result.isMain = true;
         const sign = item.toLowerCase();
         switch (sign) {
@@ -149,7 +150,9 @@ export function filterPlatForm(item) {
             break;
         default:
             result.platForm = item;
-            result.bgColor = `rgb(${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 255)})`;
+            result.bgColor = `rgb(${Math.floor(Math.random() * 255)},${Math.floor(
+                Math.random() * 255,
+            )},${Math.floor(Math.random() * 255)})`;
             result.icon = 'icon-companyreg';
             result.iconUnUse = 'icon-companyreg';
             result.isMain = false;
@@ -166,27 +169,10 @@ export function filterPlatForm(item) {
  * @return result
  */
 export function getRandKey() {
-    return Math.random().toString(36).substr(2);
+    return Math.random()
+        .toString(36)
+        .substr(2);
 }
-
-let timer = null; // 自动发布定时器
-/**
- * updatePublishState [自动静默发布]
- * @author lishen
- */
-export const updatePublishState = () => {
-    clearTimeout(timer);
-    timer = setTimeout(releaseBtn, 10000);
-};
-
-/**
- * directPublish [直接发布]
- * @author lishen
- */
-export const directPublish = () => {
-    clearTimeout(timer);
-    releaseBtn();
-};
 
 /**
  * observe [数据埋点公共方法]

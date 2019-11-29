@@ -12,23 +12,23 @@ export default [
             {
                 path: '/customerList',
                 name: 'customerList',
-                component: './CustomerList/',
+                component: './PublicCustomer/',
                 icon: 'home',
             },
             {
                 path: '/customerList/:id',
-                name:'customerDetail',
-                component:'./CustomerDetail/'
+                name: 'customerDetail',
+                component: './CustomerDetail/',
             },
             {
                 path: '/myCustomer',
                 name: 'myCustomer',
-                component: './MyCustomer/',
+                component: './PrivateCustomer/',
             },
             {
                 path: '/myCustomer/:id',
-                name:'myCustomerDetail',
-                component:'./CustomerDetail/'
+                name: 'myCustomerDetail',
+                component: './CustomerDetail/',
             },
         ],
     },

@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="179e70fd-8ab1-4296-bfbc-db2e625c7dce" name="Default Changelist" comment="" />
+    <list default="true" id="179e70fd-8ab1-4296-bfbc-db2e625c7dce" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/aiyongtech3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/AddNewPrivateCustomer/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/PrivateCustomer/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/PublicCustomer/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.eslintrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.prettierrc" beforeDir="false" afterPath="$PROJECT_DIR$/.prettierrc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/router.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/router.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/CustomerDetail/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/CustomerDetail/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/CustomerList/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/CustomerList/index.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/PublicCustomer/index.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Individual/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Individual/index.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/MyCustomer/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/MyCustomer/index.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/PrivateCustomer/index.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/NewCustomer/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/NewCustomer/index.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AddNewPrivateCustomer/index.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/customerList.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/customerList.js" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,19 +39,35 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
   <component name="ProjectId" id="1TumRAFZlZIrVQTuxI5ilURWRwp" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="SCSS" />
     <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.standard" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.standard" value="" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="prettierjs.PrettierConfiguration.Package" value="$PROJECT_DIR$/node_modules/prettier" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
     <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
   <component name="RecentsManager">
@@ -61,11 +100,31 @@
       <updated>1574318343559</updated>
       <workItem from="1574318345838" duration="30825000" />
       <workItem from="1574419649715" duration="195000" />
-      <workItem from="1574645310553" duration="61239000" />
+      <workItem from="1574645310553" duration="62226000" />
+      <workItem from="1574852677179" duration="11225000" />
+      <workItem from="1574940103231" duration="2078000" />
+      <workItem from="1574995158806" duration="3491000" />
+      <workItem from="1575014763414" duration="29000" />
+      <workItem from="1575014848908" duration="19000" />
+      <workItem from="1575016712514" duration="328000" />
+      <workItem from="1575017074042" duration="680000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

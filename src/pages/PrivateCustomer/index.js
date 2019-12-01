@@ -67,7 +67,8 @@ class PrivateCustomer extends React.Component {
             || response[1][0] === undefined
             || response[1][0].CID === undefined
         ) {
-            return [];
+            message.error('获取失败或没有数据');
+            return data;
         }
         for (let i = 0; i < response[1].length; i += 1) {
             if (response[1][i].CPublic === '0') {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Descriptions, Button, Steps } from 'antd';
 import Link from 'umi/link';
 import PropTypes from 'prop-types';
-import { getCustomerDetail } from '@/services/customerDetail';
+import getCustomerDetail from '@/services/customerDetail';
 import style from './index.scss';
 
 const { Step } = Steps;
@@ -38,7 +38,7 @@ class CustomerDetail extends React.Component {
 
     customerDetail = async (params) => {
         const response = await getCustomerDetail(params);
-        console.log(response);
+        // console.log(response);
         const data = {
             key: 0,
             name: '',
@@ -72,7 +72,7 @@ class CustomerDetail extends React.Component {
     render() {
         const { list, link } = this.state;
         const current = list.state;
-        console.log(current);
+        // console.log(current);
         return (
             <div id="main" style={{ padding: 20, backgroundColor: 'white' }}>
                 <Card

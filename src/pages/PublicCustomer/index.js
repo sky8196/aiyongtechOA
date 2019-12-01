@@ -145,7 +145,8 @@ class PublicCustomer extends React.Component {
         const response = await getCustomerList();
         const data = [];
         if (response === undefined || response[0] === 403) {
-            return message.error('获取失败');
+            message.error('获取失败或没有数据');
+            return data;
         }
         for (let i = 0; i < response[1].length; i += 1) {
             data[i] = {};

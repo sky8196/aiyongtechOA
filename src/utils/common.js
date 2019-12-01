@@ -6,22 +6,22 @@
  */
 export function isEmpty(key) {
     const type = typeof key;
-    if (type == 'undefined' || type == 'null') return true;
-    if (type == 'string') {
+    if (type === 'undefined' || type === 'null') return true;
+    if (type === 'string') {
         const res = key.replace(/(^\s*)|(\s*$)/g, '');
-        if (res == '' || res == null || res == 'null' || res == undefined || res == 'undefined') {
+        if (res === '' || res === null || res === 'null' || res === undefined || res === 'undefined') {
             return true;
         }
         return false;
     }
-    if (type == 'object') {
+    if (type === 'object') {
         /** 数组或者对象 */
-        if (key == null) return true;
+        if (key === null) return true;
         if (Object.keys(key).length > 0) return false;
         return true;
     }
-    if (type == 'boolean') return !key;
-    if (type == 'number') return !key;
+    if (type === 'boolean') return !key;
+    if (type === 'number') return !key;
     return true;
 }
 

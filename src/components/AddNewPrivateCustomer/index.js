@@ -85,28 +85,27 @@ class AddNewPrivateCustomer extends React.Component {
         this.setState({ visible });
     };
 
-    onOk = () => {
+    onOk = async () => {
         const { refreshList, status, form } = this.props;
         const { hasFeedback } = this.state;
-        const hasregister = this.registered(form.getFieldValue('name'));
-        if (
-            hasregister === true
-            || form.getFieldValue('name') === ''
-            || hasFeedback
-        ) {
+        const hasregister = await this.registered(form.getFieldValue('name'));
+        if (hasregister === true || form.getFieldValue('name') === '' || hasFeedback) {
             message.error('不能提交,请检查输入!');
-        } else if (this.newCustomer(form.getFieldsValue())) {
-            message.success('保存成功');
-            form.resetFields();
-            this.setState({
-                hasFeedback: false,
-                validateStatus: '',
-                help: '',
-                visible: false,
-            });
-            refreshList(status);
         } else {
-            message.error('保存失败');
+            const response = await this.newCustomer(form.getFieldsValue());
+            if (response === false) {
+                message.error('保存失败');
+            } else {
+                message.success('保存成功');
+                form.resetFields();
+                this.setState({
+                    hasFeedback: false,
+                    validateStatus: '',
+                    help: '',
+                    visible: false,
+                });
+                refreshList(status);
+            }
         }
     };
 

@@ -7,7 +7,7 @@ import locale from 'antd/es/date-picker/locale/zh_CN';
 import './index.scss';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import { deleteMyCustomer, getCustomerList, pushToMyCustomer } from '@/services/customerList';
+import { deleteMyCustomer, getCustomerListService, pushToMyCustomer } from '@/services/customerList';
 
 import UpdateCustomer from '@/components/UpdateCustomer';
 
@@ -29,7 +29,6 @@ class PublicCustomer extends React.Component {
             columns: [],
         };
         this.fnDebounce = false; // 函数防抖控制
-        // this.getPublicCustomer = this.getPublicCustomer.bind(this);
         // console.log(this.props);
         // console.log('当前用户', this.state.userID);
     }
@@ -47,7 +46,7 @@ class PublicCustomer extends React.Component {
         const columns = [
             {
                 title: '公司名称',
-                dataIndex: 'name',
+                dataIndex: 'companyName',
             },
             {
                 title: '联系人',
@@ -55,30 +54,30 @@ class PublicCustomer extends React.Component {
             },
             {
                 title: '联系方式',
-                dataIndex: 'tel',
+                dataIndex: 'contactTel',
             },
             {
-                title: '创建时间',
-                dataIndex: 'time',
+                title: '释放时间',
+                dataIndex: 'lastReleaseTime',
             },
             {
                 title: '最后释放人',
-                dataIndex: 'releaser',
+                dataIndex: 'lastReleaseUserName',
             },
             {
                 title: '创建人',
-                dataIndex: 'creater',
+                dataIndex: 'createUserName',
             },
             {
                 title: '状态',
-                dataIndex: 'state',
-                render: (state) => {
+                dataIndex: 'presentState',
+                render: (presentState) => {
                     let option = '';
-                    if (state === 3) {
+                    if (presentState === 3) {
                         option = <span className="redText">已签单</span>;
-                    } else if (state === 2) {
+                    } else if (presentState === 2) {
                         option = <span className="blueText">已拜访</span>;
-                    } else if (state === 1) {
+                    } else if (presentState === 1) {
                         option = <span className="greenText">已沟通</span>;
                     } else {
                         option = <span className="grayText">未处理</span>;
@@ -92,13 +91,13 @@ class PublicCustomer extends React.Component {
             },
             {
                 title: '操作',
-                dataIndex: 'key',
-                render: (key, record) => (status !== rootPower ? (
+                dataIndex: 'id',
+                render: (id, record) => (status !== rootPower ? (
                     <span>
                         <span
                             className="blueText"
                             onClick={() => {
-                                router.push(`/customerList/${key}`);
+                                router.push(`/customerList/${id}`);
                             }}
                             style={{ cursor: 'pointer' }}
                         >
@@ -110,7 +109,7 @@ class PublicCustomer extends React.Component {
                         <span
                             className="blueText"
                             onClick={() => {
-                                router.push(`/customerList/${key}`);
+                                router.push(`/customerList/${id}`);
                             }}
                             style={{ cursor: 'pointer' }}
                         >
@@ -119,14 +118,14 @@ class PublicCustomer extends React.Component {
                         <Divider type="vertical" />
                         <UpdateCustomer
                             record={record}
-                            cid={key}
+                            cid={id}
                             updatePage={() => this.getPublicCustomer(status)}
                         />
 
                         <Divider type="vertical" />
                         <span
                             className="redText"
-                            onClick={() => this.showDeleteConfirm(key)}
+                            onClick={() => this.showDeleteConfirm(id)}
                             style={{ cursor: 'pointer' }}
                         >
                                 删除
@@ -142,29 +141,19 @@ class PublicCustomer extends React.Component {
     }
 
     getDataSource = async () => {
-        const response = await getCustomerList();
-        const data = [];
-        if (response === undefined || response[0] === 403) {
+        const response = await getCustomerListService();
+        let data = [];
+        console.log(response.result);
+        if (response === undefined || response.code === 403) {
             message.error('获取失败或没有数据');
             return data;
         }
-        for (let i = 0; i < response[1].length; i += 1) {
-            data[i] = {};
-            data[i].key = response[1][i].CID;
-            data[i].name = response[1][i].CName;
-            data[i].contact = response[1][i].CContact;
-            data[i].tel = response[1][i].CTel;
-            data[i].time = response[1][i].CTime;
-            data[i].releaser = response[1][i].UName;
-            data[i].creater = response[1][i].CUName;
-            data[i].state = response[1][i].CState;
-            data[i].product = response[1][i].CProduct;
-        }
+        data = response.result;
         return data;
     };
 
     // 伪删除事件
-    showDeleteConfirm = (key) => {
+    showDeleteConfirm = (id) => {
         confirm({
             title: '确定要删除这条信息吗?',
             content: '删除后数据无法恢复!',
@@ -172,7 +161,7 @@ class PublicCustomer extends React.Component {
             okType: 'danger',
             cancelText: '取消',
             onOk: () => {
-                this.onOkDelete(key);
+                this.onOkDelete(id);
             },
             onCancel: () => {
                 message.warning('取消删除');
@@ -180,8 +169,8 @@ class PublicCustomer extends React.Component {
         });
     };
 
-    onOkDelete = async (key) => {
-        const deleteMy = await deleteMyCustomer(key);
+    onOkDelete = async (id) => {
+        const deleteMy = await deleteMyCustomer(id);
         if (deleteMy === undefined || deleteMy[0] === 403 || deleteMy[1] === false) {
             message.error('删除失败!');
         } else {
@@ -306,6 +295,7 @@ class PublicCustomer extends React.Component {
                         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                     ) : (
                         <Table
+                            rowKey="id"
                             rowSelection={rowSelection}
                             columns={columns}
                             dataSource={dataSource}

@@ -2,27 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="179e70fd-8ab1-4296-bfbc-db2e625c7dce" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/aiyongtech3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/AddNewPrivateCustomer/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/PrivateCustomer/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/PublicCustomer/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.eslintrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.prettierrc" beforeDir="false" afterPath="$PROJECT_DIR$/.prettierrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/router.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/router.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/CustomerDetail/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/CustomerDetail/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/CustomerList/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/CustomerList/index.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/PublicCustomer/index.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Individual/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Individual/index.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/MyCustomer/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/MyCustomer/index.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/PrivateCustomer/index.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/NewCustomer/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/NewCustomer/index.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AddNewPrivateCustomer/index.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/PrivateCustomer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/PrivateCustomer/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/PublicCustomer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/PublicCustomer/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/customerDetail.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/customerDetail.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/customerList.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/customerList.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -107,7 +91,9 @@
       <workItem from="1575014763414" duration="29000" />
       <workItem from="1575014848908" duration="19000" />
       <workItem from="1575016712514" duration="328000" />
-      <workItem from="1575017074042" duration="680000" />
+      <workItem from="1575017074042" duration="943000" />
+      <workItem from="1575250801904" duration="662000" />
+      <workItem from="1575251961218" duration="8925000" />
     </task>
     <servers />
   </component>
@@ -126,5 +112,17 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/services/customerList.js</url>
+          <line>12</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

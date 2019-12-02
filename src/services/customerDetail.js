@@ -1,18 +1,17 @@
 import request from '@/utils/request';
 /**
- * getCustomerDetail [获取客户详情]
+ * getCustomerDetailService [获取客户详情]
  * @author lishen
  */
-async function getCustomerDetail(id, isPublic) {
+async function getCustomerDetailService(id) {
     return request('http://szhtonpal.aiyongbao.com/api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.getCustomerDetail',
+            method: 'aiyong.foreigntrade.ca.getCustomerDetailAction',
             namespace: 'ss',
             id,
-            public: isPublic,
         },
     });
 }
 
-export default getCustomerDetail;
+export default getCustomerDetailService;

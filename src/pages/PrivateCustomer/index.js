@@ -10,7 +10,7 @@ import router from 'umi/router';
 import AddNewPrivateCustomer from '@/components/AddNewPrivateCustomer';
 import UpdateCustomer from '@/components/UpdateCustomer';
 import { deleteMyCustomer,
-    getMyCustomer,
+    getCustomerListService,
     updateCustomerState,
     releaseCustomer,
     searchCustomer } from '@/services/customerList';
@@ -40,7 +40,6 @@ class PrivateCustomer extends React.Component {
             selectValue: 'none',
             dateValueString: '',
         };
-        this.getMyCustomer = this.getMyCustomer.bind(this);
     }
 
     /** 组件挂载 */
@@ -50,40 +49,21 @@ class PrivateCustomer extends React.Component {
     }
 
     /** 异步请求数据 */
-    async getMyCustomer(id) {
+    getMyCustomer = async (id) => {
         const data = await this.getDataSource(id);
         // console.log(data);
         this.setState({ dataSource: data });
     }
 
     getDataSource = async (id) => {
-        const response = await getMyCustomer(id);
-        // console.log(response);
-        const data = [];
-        let count = 0;
-        if (
-            response === undefined
-            || response[0] === 403
-            || response[1][0] === undefined
-            || response[1][0].CID === undefined
-        ) {
+        const response = await getCustomerListService(id);
+        console.log(response);
+        let data = [];
+        if (response === undefined || response.code === 403) {
             message.error('获取失败或没有数据');
             return data;
         }
-        for (let i = 0; i < response[1].length; i += 1) {
-            if (response[1][i].CPublic === '0') {
-                data[count] = {};
-                data[count].key = response[1][i].CID;
-                data[count].name = response[1][i].CName;
-                data[count].contact = response[1][i].CContact;
-                data[count].tel = response[1][i].CTel;
-                data[count].time = response[1][i].CTime;
-                data[count].creater = response[1][i].CUName;
-                data[count].state = response[1][i].CState;
-                data[count].product = response[1][i].CProduct;
-                count += 1;
-            }
-        }
+        data = response.result;
         return data;
     };
 
@@ -128,7 +108,7 @@ class PrivateCustomer extends React.Component {
     };
 
     // 删除事件
-    showDeleteConfirm = (key) => {
+    showDeleteConfirm = (id) => {
         confirm({
             title: '确定要删除这条信息吗?',
             content: '删除后数据无法恢复!',
@@ -136,7 +116,7 @@ class PrivateCustomer extends React.Component {
             okType: 'danger',
             cancelText: '取消',
             onOk: () => {
-                this.onOkDelete(key);
+                this.onOkDelete(id);
             },
             onCancel: () => {
                 message.warning('取消删除');
@@ -145,8 +125,8 @@ class PrivateCustomer extends React.Component {
     };
 
     // 确认删除
-    onOkDelete = async (key) => {
-        const deleteMy = await deleteMyCustomer(key);
+    onOkDelete = async (id) => {
+        const deleteMy = await deleteMyCustomer(id);
         if (deleteMy === undefined || deleteMy[0] === 403 || deleteMy[1] === false) {
             message.error('删除失败!');
         } else {
@@ -156,14 +136,14 @@ class PrivateCustomer extends React.Component {
     };
 
     // 释放操作
-    showConfirm = ({ key }) => {
+    showConfirm = ({ id }) => {
         confirm({
             title: '确定要释放到公海吗?',
             content: '释放后可在公海查看',
             okText: '确定',
             cancelText: '取消',
             onOk: () => {
-                this.setState({ selectedRowKeys: [key] }, () => {
+                this.setState({ selectedRowKeys: [id] }, () => {
                     this.onOKshowConfirm();
                 });
             },
@@ -203,7 +183,7 @@ class PrivateCustomer extends React.Component {
         const lsData = this.state.dataSource;
         const oldData = this.state.dataSource;
         lsData.forEach((val) => {
-            if (val.key === data) {
+            if (val.id === data) {
                 if (value !== Number(val.state) + 1) {
                     message.error('不能回退或跳过状态');
                     return;
@@ -228,7 +208,7 @@ class PrivateCustomer extends React.Component {
     handleOk = () => {
         const { lsData, value, id } = this.state.visibleData;
         lsData.forEach(async (val) => {
-            if (val.key === id) {
+            if (val.id === id) {
                 val.state = String(value);
                 const cid = val.key;
                 const cstate = val.state;
@@ -268,7 +248,7 @@ class PrivateCustomer extends React.Component {
         const arr = dataSource;
         for (let i = 0; i < arr.length; i += 1) {
             for (let j = 0; j < dataArray.length; j += 1) {
-                if (arr[i].key === dataArray[j]) {
+                if (arr[i].id === dataArray[j]) {
                     arr.splice(i, 1);
                 }
             }
@@ -287,7 +267,7 @@ class PrivateCustomer extends React.Component {
         const columns = [
             {
                 title: '公司名称',
-                dataIndex: 'name',
+                dataIndex: 'companyName',
             },
             {
                 title: '联系人',
@@ -295,27 +275,27 @@ class PrivateCustomer extends React.Component {
             },
             {
                 title: '联系方式',
-                dataIndex: 'tel',
+                dataIndex: 'contactTel',
             },
             {
                 title: '创建时间',
-                dataIndex: 'time',
+                dataIndex: 'createTime',
             },
             {
                 title: '创建人',
-                dataIndex: 'creater',
+                dataIndex: 'createUserName',
             },
             {
                 title: '状态',
-                dataIndex: 'state',
-                render: (state, data) => (state === '3' ? (
+                dataIndex: 'presentState',
+                render: (presentState, data) => (presentState === '3' ? (
                     <span className="redText">已签单</span>
                 ) : (
                     <Select
                         className="margin"
-                        tar={data.key}
-                        value={state}
-                        onSelect={(e) => this.stateChange(e, data.key)}
+                        tar={data.id}
+                        value={presentState}
+                        onSelect={(e) => this.stateChange(e, data.id)}
                     >
                         <Option value="0">
                             <span className="grayText">未处理</span>
@@ -338,13 +318,13 @@ class PrivateCustomer extends React.Component {
             },
             {
                 title: '操作',
-                dataIndex: 'key',
-                render: (key, record) => (status !== rootPower ? (
+                dataIndex: 'id',
+                render: (id, record) => (status !== rootPower ? (
                     <span>
                         <span
                             className="blueText"
                             onClick={() => {
-                                router.push(`/myCustomer/${key}`);
+                                router.push(`/myCustomer/${id}`);
                             }}
                             style={{ cursor: 'pointer' }}
                         >
@@ -353,7 +333,7 @@ class PrivateCustomer extends React.Component {
                         <Divider type="vertical" />
                         <span
                             className="blueText"
-                            onClick={() => this.showConfirm({ key })}
+                            onClick={() => this.showConfirm({ id })}
                             style={{ cursor: 'pointer' }}
                         >
                                 释放
@@ -364,7 +344,7 @@ class PrivateCustomer extends React.Component {
                         <span
                             className="blueText"
                             onClick={() => {
-                                router.push(`/myCustomer/${key}`);
+                                router.push(`/myCustomer/${id}`);
                             }}
                             style={{ cursor: 'pointer' }}
                         >
@@ -373,7 +353,7 @@ class PrivateCustomer extends React.Component {
                         <Divider type="vertical" />
                         <span
                             className="blueText"
-                            onClick={() => this.showConfirm({ key })}
+                            onClick={() => this.showConfirm({ id })}
                             style={{ cursor: 'pointer' }}
                         >
                                 释放
@@ -381,14 +361,14 @@ class PrivateCustomer extends React.Component {
                         <Divider type="vertical" />
                         <UpdateCustomer
                             record={record}
-                            cid={key}
+                            cid={id}
                             updatePage={() => this.getMyCustomer(status)}
                         />
                         <Divider type="vertical" />
                         <span
                             className="redText"
                             onClick={() => {
-                                this.showDeleteConfirm(key);
+                                this.showDeleteConfirm(id);
                             }}
                             style={{ cursor: 'pointer' }}
                         >
@@ -462,6 +442,7 @@ class PrivateCustomer extends React.Component {
                         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                     ) : (
                         <Table
+                            rowKey="id"
                             rowSelection={rowSelection}
                             columns={columns}
                             dataSource={dataSource}

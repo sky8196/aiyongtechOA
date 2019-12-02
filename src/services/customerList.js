@@ -1,29 +1,16 @@
 import request from '@/utils/request';
 /**
- * getCustomerList [获取公海客户信息]
- * @author szh
+ * getCustomerListService [获取客户信息]
+ * @author zy
+ * @param UID [用户UID]
  */
-export async function getCustomerList() {
+export async function getCustomerListService(UID) {
     return request('http://szhtonpal.aiyongbao.com//api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.getCustomerList',
+            method: 'aiyong.foreigntrade.ca.getCustomerListAction',
             namespace: 'ss',
-        },
-    });
-}
-/**
- * getMyCustomer [获取我的客户信息]
- * @param id [用户id]
- * @author sfz
- */
-export async function getMyCustomer(id) {
-    return request('http://szhtonpal.aiyongbao.com//api', {
-        method: 'POST',
-        data: {
-            method: 'aiyong.foreigntrade.ca.getMyCustomer',
-            namespace: 'ss',
-            id,
+            UID,
         },
     });
 }

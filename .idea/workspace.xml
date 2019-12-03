@@ -2,12 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="179e70fd-8ab1-4296-bfbc-db2e625c7dce" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/utils/customerGlobal.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/CustomerDetail/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/CustomerDetail/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/AddNewPrivateCustomer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AddNewPrivateCustomer/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/UpdateCustomer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/UpdateCustomer/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/login.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/PrivateCustomer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/PrivateCustomer/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/PublicCustomer/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/PublicCustomer/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/customerDetail.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/customerDetail.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/customerList.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/customerList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/newCustomer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/addNewPrivateCustomer.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,8 +21,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="SCSS File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -93,7 +96,7 @@
       <workItem from="1575016712514" duration="328000" />
       <workItem from="1575017074042" duration="943000" />
       <workItem from="1575250801904" duration="662000" />
-      <workItem from="1575251961218" duration="8925000" />
+      <workItem from="1575251961218" duration="34628000" />
     </task>
     <servers />
   </component>
@@ -112,17 +115,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/services/customerList.js</url>
-          <line>12</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

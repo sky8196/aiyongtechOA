@@ -9,10 +9,10 @@ import router from 'umi/router';
 
 import AddNewPrivateCustomer from '@/components/AddNewPrivateCustomer';
 import UpdateCustomer from '@/components/UpdateCustomer';
-import { deleteMyCustomer,
+import { deleteMyCustomerService,
     getCustomerListService,
-    updateCustomerState,
-    releaseCustomer,
+    updateCustomerStateService,
+    releaseCustomerService,
     searchCustomer } from '@/services/customerList';
 import { emptyOrBlank } from '../../utils/common';
 
@@ -44,8 +44,8 @@ class PrivateCustomer extends React.Component {
 
     /** 组件挂载 */
     componentDidMount() {
-        const { status } = this.props;
-        this.getMyCustomer(status);
+        const { UID } = this.props;
+        this.getMyCustomer(UID);
     }
 
     /** 异步请求数据 */
@@ -91,7 +91,7 @@ class PrivateCustomer extends React.Component {
 
     // 点击查询
     moreConditionSearch = async () => {
-        const { status } = this.props;
+        const { UID } = this.props;
         const { searchNameOrTelValue, selectValue, dateValueString } = this.state;
         if (searchNameOrTelValue === '' && dateValueString === '' && selectValue === 'none') {
             message.warning('请输入至少一个条件');
@@ -101,7 +101,7 @@ class PrivateCustomer extends React.Component {
             searchNameOrTelValue,
             selectValue,
             dateValueString,
-            status,
+            UID,
         });
         // const response = await searchCustomer({ searchNameOrTelValue, selectValue, dateValueString });
         console.log(response);
@@ -126,12 +126,12 @@ class PrivateCustomer extends React.Component {
 
     // 确认删除
     onOkDelete = async (id) => {
-        const deleteMy = await deleteMyCustomer(id);
-        if (deleteMy === undefined || deleteMy[0] === 403 || deleteMy[1] === false) {
+        const response = await deleteMyCustomerService(id);
+        if (response === undefined || response.code === 403 || response.result === false) {
             message.error('删除失败!');
         } else {
+            await this.onceUpdateDataSource([id]);
             message.success('删除成功');
-            this.getPublicCustomer();
         }
     };
 
@@ -154,10 +154,11 @@ class PrivateCustomer extends React.Component {
     };
 
     onOKshowConfirm = async () => {
-        const { status } = this.props;
-        const parames = { status, cid: this.state.selectedRowKeys };
-        const response = await releaseCustomer(parames);
-        if (response === undefined || response[0] === 403 || response[3] === undefined) {
+        const { UName } = this.props;
+        const parames = { UName, id: this.state.selectedRowKeys };
+        const response = await releaseCustomerService(parames);
+        console.log(response);
+        if (response === undefined || response.code === 403 || response.result !== true) {
             message.error('释放失败');
             return;
         }
@@ -174,7 +175,12 @@ class PrivateCustomer extends React.Component {
     };
 
     batchConfirm = () => {
-        this.onOKshowConfirm({ cid: this.state.selectedRowKeys });
+        const idArray = this.state.selectedRowKeys;
+        if (idArray.length === 0) {
+            message.error('没有需要释放的对象');
+            return;
+        }
+        this.onOKshowConfirm();
     };
 
     // 修改客户状态事件
@@ -184,7 +190,7 @@ class PrivateCustomer extends React.Component {
         const oldData = this.state.dataSource;
         lsData.forEach((val) => {
             if (val.id === data) {
-                if (value !== Number(val.state) + 1) {
+                if (value !== Number(val.presentState) + 1) {
                     message.error('不能回退或跳过状态');
                     return;
                 }
@@ -200,8 +206,8 @@ class PrivateCustomer extends React.Component {
     };
 
     // 存储备注信息
-    updateStataDetail = ({ target }) => {
-        this.setState({ updateStataDetail: target.value });
+    updateStataDetail = ({ target: { value } }) => {
+        this.setState({ updateStataDetail: value });
     };
 
     // 确认修改
@@ -209,15 +215,12 @@ class PrivateCustomer extends React.Component {
         const { lsData, value, id } = this.state.visibleData;
         lsData.forEach(async (val) => {
             if (val.id === id) {
-                val.state = String(value);
-                const cid = val.key;
-                const cstate = val.state;
-                const cdetail = this.state.updateStataDetail;
-                const response = await updateCustomerState({ cid, cstate, cdetail });
-                if (response === undefined || response[0] === 403) {
+                val.presentState = String(value);
+                const note = this.state.updateStataDetail;
+                const response = await updateCustomerStateService({ id, presentState: val.presentState, note });
+                if (response === undefined || response.code === 403 || response.result !== true) {
                     this.clearUpdateTemporaryData();
                     message.error('修改失败');
-                    return;
                 }
                 this.setState({ visibleUpdateState: false, dataSource: lsData }, () => {
                     this.clearUpdateTemporaryData();
@@ -258,7 +261,7 @@ class PrivateCustomer extends React.Component {
 
     /** 组件渲染 */
     render() {
-        const { status } = this.props;
+        const { UID } = this.props;
         const { selectedRowKeys, dataSource, dateValue, rootPower, selectValue, visibleUpdateState, updateStataDetail } = this.state;
         const rowSelection = {
             selectedRowKeys,
@@ -319,7 +322,7 @@ class PrivateCustomer extends React.Component {
             {
                 title: '操作',
                 dataIndex: 'id',
-                render: (id, record) => (status !== rootPower ? (
+                render: (id, record) => (UID !== rootPower ? (
                     <span>
                         <span
                             className="blueText"
@@ -362,7 +365,7 @@ class PrivateCustomer extends React.Component {
                         <UpdateCustomer
                             record={record}
                             cid={id}
-                            updatePage={() => this.getMyCustomer(status)}
+                            updatePage={() => this.getMyCustomer(UID)}
                         />
                         <Divider type="vertical" />
                         <span
@@ -473,6 +476,6 @@ class PrivateCustomer extends React.Component {
         );
     }
 }
-PrivateCustomer.defaultProps = { status: 0 };
-PrivateCustomer.propTypes = { status: PropTypes.any };
-export default connect(({ login: { status } }) => ({ status }))(PrivateCustomer);
+PrivateCustomer.defaultProps = { UID: 0, UName: '' };
+PrivateCustomer.propTypes = { UID: PropTypes.any, UName: PropTypes.any };
+export default connect(({ login: { UID, UName } }) => ({ UID, UName }))(PrivateCustomer);

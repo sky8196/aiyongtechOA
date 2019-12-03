@@ -1,8 +1,8 @@
 export default {
     namespaces: 'login',
     state: {
-        status: 1, // 1  //3
-        a: '2',
+        UID: 1, // 1  //2 // 3
+        UName: '小李', // 小李 // 小张 // 小王
     },
     effects: {},
     reducers: {},

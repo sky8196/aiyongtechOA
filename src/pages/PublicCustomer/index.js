@@ -7,7 +7,7 @@ import locale from 'antd/es/date-picker/locale/zh_CN';
 import './index.scss';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import { deleteMyCustomer, getCustomerListService, pushToMyCustomer } from '@/services/customerList';
+import { deleteMyCustomerService, getCustomerListService, pushToMyCustomerService } from '@/services/customerList';
 
 import UpdateCustomer from '@/components/UpdateCustomer';
 
@@ -40,7 +40,7 @@ class PublicCustomer extends React.Component {
 
     /** 异步请求数据 */
     async getPublicCustomer() {
-        const { status } = this.props;
+        const { UID } = this.props;
         const { rootPower } = this.state;
         const data = await this.getDataSource();
         const columns = [
@@ -73,11 +73,11 @@ class PublicCustomer extends React.Component {
                 dataIndex: 'presentState',
                 render: (presentState) => {
                     let option = '';
-                    if (presentState === 3) {
+                    if (presentState === '3') {
                         option = <span className="redText">已签单</span>;
-                    } else if (presentState === 2) {
+                    } else if (presentState === '2') {
                         option = <span className="blueText">已拜访</span>;
-                    } else if (presentState === 1) {
+                    } else if (presentState === '1') {
                         option = <span className="greenText">已沟通</span>;
                     } else {
                         option = <span className="grayText">未处理</span>;
@@ -92,7 +92,7 @@ class PublicCustomer extends React.Component {
             {
                 title: '操作',
                 dataIndex: 'id',
-                render: (id, record) => (status !== rootPower ? (
+                render: (id, record) => (UID !== rootPower ? (
                     <span>
                         <span
                             className="blueText"
@@ -119,7 +119,7 @@ class PublicCustomer extends React.Component {
                         <UpdateCustomer
                             record={record}
                             cid={id}
-                            updatePage={() => this.getPublicCustomer(status)}
+                            updatePage={() => this.getPublicCustomer(UID)}
                         />
 
                         <Divider type="vertical" />
@@ -143,7 +143,7 @@ class PublicCustomer extends React.Component {
     getDataSource = async () => {
         const response = await getCustomerListService();
         let data = [];
-        console.log(response.result);
+        console.log(response);
         if (response === undefined || response.code === 403) {
             message.error('获取失败或没有数据');
             return data;
@@ -170,12 +170,12 @@ class PublicCustomer extends React.Component {
     };
 
     onOkDelete = async (id) => {
-        const deleteMy = await deleteMyCustomer(id);
-        if (deleteMy === undefined || deleteMy[0] === 403 || deleteMy[1] === false) {
+        const response = await deleteMyCustomerService(id);
+        if (response === undefined || response.code === 403 || response.result === false) {
             message.error('删除失败!');
         } else {
+            await this.onceUpdateDataSource([id]);
             message.success('删除成功');
-            this.getPublicCustomer();
         }
     };
 
@@ -185,7 +185,7 @@ class PublicCustomer extends React.Component {
     };
 
     pushToMyCustomer = async () => {
-        const { status } = this.props;
+        const { UID } = this.props;
         if (this.fnDebounce) {
             return;
         }
@@ -196,9 +196,9 @@ class PublicCustomer extends React.Component {
             });
             return;
         }
-        const response = await pushToMyCustomer({
+        const response = await pushToMyCustomerService({
             cid: this.state.selectedRowKeys,
-            userID: status,
+            userID: UID,
         });
         if (response === undefined || response[0] === 403 || response[3] === false) {
             message.error('添加失败');
@@ -314,6 +314,6 @@ class PublicCustomer extends React.Component {
         );
     }
 }
-PublicCustomer.defaultProps = { status: 0 };
-PublicCustomer.propTypes = { status: PropTypes.any };
-export default connect(({ login: { status } }) => ({ status }))(PublicCustomer);
+PublicCustomer.defaultProps = { UID: 0 };
+PublicCustomer.propTypes = { UID: PropTypes.any };
+export default connect(({ login: { UID } }) => ({ UID }))(PublicCustomer);

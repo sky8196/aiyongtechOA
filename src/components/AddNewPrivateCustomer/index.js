@@ -3,7 +3,7 @@ import './index.scss';
 import { Button, Modal, Form, Input, message } from 'antd';
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
-import { hasRegister, insertMyCustomer } from '@/services/newCustomer';
+import { testRegisterService, insertMyCustomerService } from '@/services/addNewPrivateCustomer';
 
 const { TextArea } = Input;
 
@@ -17,95 +17,82 @@ class AddNewPrivateCustomer extends React.Component {
             validateStatus: '',
             help: '',
             visible: false,
+            registerName: false,
         };
     }
 
-    registered = async (name) => {
-        const { form } = this.props;
-        if (
-            name !== ''
-            && form.getFieldValue('name') !== ''
-            && form.getFieldValue('name') !== undefined
-        ) {
-            const hasregister = await this.getRegister(name);
-            if (hasregister === true) {
-                this.setState({
-                    hasFeedback: true,
-                    validateStatus: 'error',
-                    help: '该名称已存在',
-                });
-                return true;
-            }
-            this.setState({
-                hasFeedback: false,
-                validateStatus: '',
-                help: '',
-            });
-            return false;
-        }
-        this.setState({
-            hasFeedback: true,
-            validateStatus: 'error',
-            help: '公司名称不能为空',
-        });
-        return true;
-    };
-
-    newCustomer = async (form) => {
-        const { status } = this.props;
-        const pamers = Object.assign(form, { id: status });
-        const result = await this.insertCustomer(pamers);
-        return result;
-    };
-
-    getRegister = async (name) => {
-        const response = await hasRegister(name);
-        if (response === undefined || response[0] === 403 || response[1] === false) {
-            return false;
-        }
-        return true;
-    };
-
-    insertCustomer = async (form) => {
-        const response = await insertMyCustomer(form);
-        if (response === undefined || response[0] === 403 || response[1] === false) {
-            return false;
-        }
-        return true;
-    };
-
-    onChangeName = ({ target: { value } }) => {
-        const { form } = this.props;
-        form.setFieldsValue({ name: value });
-        this.registered(value);
-    };
-
+    /** 打开model */
     showNewCustomer = () => {
         const visible = true;
         this.setState({ visible });
     };
 
-    onOk = async () => {
-        const { refreshList, status, form } = this.props;
-        const { hasFeedback } = this.state;
-        const hasregister = await this.registered(form.getFieldValue('name'));
-        if (hasregister === true || form.getFieldValue('name') === '' || hasFeedback) {
-            message.error('不能提交,请检查输入!');
+    /** 检测公司名字是否为空 */
+    testRegistered = ({ target: { value } }) => {
+        console.log(value);
+        if (value === '') {
+            this.setState({
+                hasFeedback: true,
+                validateStatus: 'error',
+                help: '公司名称不能为空',
+            });
         } else {
-            const response = await this.newCustomer(form.getFieldsValue());
-            if (response === false) {
-                message.error('保存失败');
-            } else {
-                message.success('保存成功');
-                form.resetFields();
-                this.setState({
-                    hasFeedback: false,
-                    validateStatus: '',
-                    help: '',
-                    visible: false,
-                });
-                refreshList(status);
-            }
+            this.getRegister(value);
+        }
+    };
+
+    /** 检测公司名字是否可用 */
+    getRegister = async (name) => {
+        const response = await testRegisterService(name);
+        console.log(response);
+        if (response === undefined || response.result === false) {
+            this.setState({
+                hasFeedback: false,
+                validateStatus: 'success',
+                help: '该名称可用',
+                registerName: true,
+            });
+        } else {
+            this.setState({
+                hasFeedback: true,
+                validateStatus: 'error',
+                help: '该名称已存在',
+                registerName: false,
+            });
+        }
+    };
+
+    /** 确认增加 */
+    onOk = async () => {
+        const { refreshList, UID, UName, form } = this.props;
+        const { registerName } = this.state;
+        console.log(registerName);
+        if (registerName === false) {
+            this.setState({
+                hasFeedback: true,
+                validateStatus: 'error',
+                help: '公司名称不能为空',
+            });
+        } else {
+            form.validateFields(async (errors) => {
+                if (!errors) {
+                    const data = Object.assign(form.getFieldsValue(), { UID, UName });
+                    console.log('确认添加');
+                    const response = await insertMyCustomerService(data);
+                    if (response === undefined || response.code === 403) {
+                        message.error('保存失败');
+                    } else {
+                        message.success('保存成功');
+                    }
+                    form.resetFields();
+                    this.setState({
+                        hasFeedback: false,
+                        validateStatus: '',
+                        help: '',
+                        visible: false,
+                    }, () => { refreshList(UID); });
+                }
+            });
         }
     };
 
@@ -152,20 +139,21 @@ class AddNewPrivateCustomer extends React.Component {
                                 {...formItemLayout}
                                 hasFeedback={hasFeedback}
                                 validateStatus={validateStatus}
+                                required="true"
                                 help={help}
                             >
-                                {getFieldDecorator('name')(
-                                    <Input onChange={this.onChangeName} allowClear />,
+                                {getFieldDecorator('companyName')(
+                                    <Input allowClear onBlur={this.testRegistered} onChange={() => { this.setState({ registerName: false }); }} />,
                                 )}
                             </Form.Item>
                             <Form.Item label="联系人" {...formItemLayout}>
-                                {getFieldDecorator('contact')(<Input allowClear />)}
+                                {getFieldDecorator('contact', { rules: [{ required: true, message: '请输入联系人' }] })(<Input allowClear />)}
                             </Form.Item>
                             <Form.Item label="联系方式" {...formItemLayout}>
-                                {getFieldDecorator('tel')(<Input allowClear />)}
+                                {getFieldDecorator('contactTel', { rules: [{ required: true, message: '请输入联系方式' }] })(<Input allowClear />)}
                             </Form.Item>
                             <Form.Item label="产品" {...formItemLayout}>
-                                {getFieldDecorator('product')(
+                                {getFieldDecorator('product', { rules: [{ required: true, message: '请填写产品' }] })(
                                     <TextArea
                                         placeholder=""
                                         autoSize={{ minRows: 3, maxRows: 5 }}
@@ -181,7 +169,7 @@ class AddNewPrivateCustomer extends React.Component {
     }
 }
 
-AddNewPrivateCustomer.defaultProps = { status: 0, form: '', refreshList: '' };
-AddNewPrivateCustomer.propTypes = { status: PropTypes.any, form: PropTypes.any, refreshList: PropTypes.any };
+AddNewPrivateCustomer.defaultProps = { UID: 0, UName: '', form: '', refreshList: '' };
+AddNewPrivateCustomer.propTypes = { UID: PropTypes.any, UName: PropTypes.any, form: PropTypes.any, refreshList: PropTypes.any };
 const AddNewPrivateCustomerForm = Form.create({ name: 'form_in_modal' })(AddNewPrivateCustomer);
-export default connect(({ login: { status } }) => ({ status }))(AddNewPrivateCustomerForm);
+export default connect(({ login: { UID, UName } }) => ({ UID, UName }))(AddNewPrivateCustomerForm);

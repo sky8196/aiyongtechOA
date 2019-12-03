@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Form, Input, message } from 'antd';
-import { updateCustomer } from '@/services/customerList';
+import { updateCustomerService } from '@/services/customerList';
 
 const { TextArea } = Input;
 
@@ -21,10 +21,14 @@ class UpdateCustomer extends React.Component {
     onOkUpdate = async () => {
         const { form, cid, updatePage } = this.props;
         this.setState({ visible: false });
-        const data = await Object.assign(form.getFieldsValue(), { cid });
-        await updateCustomer({ data });
-        await updatePage();
-        await message.success('修改成功');
+        const data = await Object.assign(form.getFieldsValue(), { id: cid });
+        const response = await updateCustomerService({ data });
+        if (response === undefined || response.code === 403 || response.result === false) {
+            message.error('修改失败!');
+        } else {
+            await updatePage();
+            await message.success('修改成功');
+        }
     };
 
     hideModalUpdate = () => {
@@ -64,28 +68,20 @@ class UpdateCustomer extends React.Component {
                     >
                         <Form layout="horizontal">
                             <Form.Item label="公司名称" {...formItemLayout}>
-                                {getFieldDecorator('name', {
-                                    initialValue: record.name,
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: 'Please input the title of collection!',
-                                        },
-                                    ],
-                                })(<Input targ="name" allowClear disabled />)}
+                                {getFieldDecorator('companyName', { initialValue: record.companyName })(<Input targ="name" allowClear disabled />)}
                             </Form.Item>
                             <Form.Item label="联系人" {...formItemLayout}>
-                                {getFieldDecorator('contact', { initialValue: record.contact })(
+                                {getFieldDecorator('contact', { initialValue: record.contact, rules: [{ required: true, message: '不能为空' }] })(
                                     <Input allowClear placeholder="请输入" targ="contact" />,
                                 )}
                             </Form.Item>
                             <Form.Item label="联系方式" {...formItemLayout}>
-                                {getFieldDecorator('tel', { initialValue: record.tel })(
+                                {getFieldDecorator('contactTel', { initialValue: record.contactTel, rules: [{ required: true, message: '不能为空' }] })(
                                     <Input allowClear targ="tel" />,
                                 )}
                             </Form.Item>
                             <Form.Item label="产品" {...formItemLayout}>
-                                {getFieldDecorator('product', { initialValue: record.product })(
+                                {getFieldDecorator('product', { initialValue: record.product,rules: [{ required: true, message: '不能为空' }] })(
                                     <TextArea
                                         targ="product"
                                         placeholder=""
@@ -101,7 +97,7 @@ class UpdateCustomer extends React.Component {
         );
     }
 }
-UpdateCustomer.defaultProps = { status: 0, form: '', cid: '', updatePage: '', record: '' };
-UpdateCustomer.propTypes = { status: PropTypes.any, form: PropTypes.any, cid: PropTypes.any, updatePage: PropTypes.any, record: PropTypes.any };
+UpdateCustomer.defaultProps = { form: '', cid: '', updatePage: '', record: '' };
+UpdateCustomer.propTypes = { form: PropTypes.any, cid: PropTypes.any, updatePage: PropTypes.any, record: PropTypes.any };
 const UpdateCustomerForm = Form.create({ name: 'form_in_modal' })(UpdateCustomer);
 export default UpdateCustomerForm;

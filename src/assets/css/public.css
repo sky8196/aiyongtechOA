@@ -22,8 +22,16 @@
   margin: 10px;
 }
 .router-box{
-  padding: 10px 0;
+  padding: 10px;
 }
 body{
-  background-color:#fafafa !important;
+  background-color:#f0f2f5 !important;
+}
+.router-box .ant-table-pagination{
+  padding: 0 20px;
+}
+.router-box .ant-table-footer{
+  background: #fff;
+  padding: 10px;
+  color: #999999;
 }

@@ -1,8 +1,10 @@
 import pageRoutes from './router.config';
 // ref: https://umijs.org/config/
 const config = {
+    history: 'hash',
     treeShaking: true,
     routes: pageRoutes,
+    publicPath: '/aiyongtechOA/dist/',
     /* [
     {
       path: '/',

@@ -51,7 +51,7 @@ class CustomerDetail extends React.Component {
         const current = list.presentState;
         // console.log(current);
         return (
-            <div id="main" style={{ padding: 20, backgroundColor: 'white' }}>
+            <div className="detail-box">
                 <Card
                     title="客户详情"
                     bordered={false}
@@ -80,7 +80,7 @@ class CustomerDetail extends React.Component {
                             </Descriptions.Item>
                         ) : null}
                         <Descriptions.Item label="产品">
-                            {list.product}
+                            <div>{list.product}</div>
                         </Descriptions.Item>
                         <Descriptions.Item label="状态">
                             <Steps

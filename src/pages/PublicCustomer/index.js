@@ -7,9 +7,11 @@ import locale from 'antd/es/date-picker/locale/zh_CN';
 import './index.scss';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import { deleteMyCustomerService, getCustomerListService, pushToMyCustomerService } from '@/services/customerList';
+import { getCustomerListService, pushToMyCustomerService, searchCustomerService } from '@/services/customerList';
 
 import UpdateCustomer from '@/components/UpdateCustomer';
+import { emptyOrBlank } from '@/utils/common';
+import { tableUpdateDataProcessing, deleteCustomer } from '@/utils/customerGlobal';
 
 moment.locale('zh-cn');
 const { confirm } = Modal;
@@ -24,11 +26,12 @@ class PublicCustomer extends React.Component {
         this.state = {
             rootPower: 1, // root权限控制
             dataSource: [],
-            selectValue: 'none',
             selectedRowKeys: [],
             columns: [],
+            selectValue: 'none',
+            searchNameOrTelValue: '',
+            dateValueString: '',
         };
-        this.fnDebounce = false; // 函数防抖控制
         // console.log(this.props);
         // console.log('当前用户', this.state.userID);
     }
@@ -47,30 +50,42 @@ class PublicCustomer extends React.Component {
             {
                 title: '公司名称',
                 dataIndex: 'companyName',
+                ellipsis: true,
+                width: '13%',
             },
             {
                 title: '联系人',
                 dataIndex: 'contact',
+                ellipsis: true,
+                width: '8%',
             },
             {
                 title: '联系方式',
                 dataIndex: 'contactTel',
+                ellipsis: true,
+                width: '10%',
             },
             {
                 title: '释放时间',
                 dataIndex: 'lastReleaseTime',
+                width: '13%',
             },
             {
                 title: '最后释放人',
                 dataIndex: 'lastReleaseUserName',
+                ellipsis: true,
+                width: '8%',
             },
             {
                 title: '创建人',
                 dataIndex: 'createUserName',
+                ellipsis: true,
+                width: '8%',
             },
             {
                 title: '状态',
                 dataIndex: 'presentState',
+                width: '8%',
                 render: (presentState) => {
                     let option = '';
                     if (presentState === '3') {
@@ -88,6 +103,7 @@ class PublicCustomer extends React.Component {
             {
                 title: '产品',
                 dataIndex: 'product',
+                ellipsis: true,
             },
             {
                 title: '操作',
@@ -152,64 +168,9 @@ class PublicCustomer extends React.Component {
         return data;
     };
 
-    // 伪删除事件
-    showDeleteConfirm = (id) => {
-        confirm({
-            title: '确定要删除这条信息吗?',
-            content: '删除后数据无法恢复!',
-            okText: '删除',
-            okType: 'danger',
-            cancelText: '取消',
-            onOk: () => {
-                this.onOkDelete(id);
-            },
-            onCancel: () => {
-                message.warning('取消删除');
-            },
-        });
-    };
-
-    onOkDelete = async (id) => {
-        const response = await deleteMyCustomerService(id);
-        if (response === undefined || response.code === 403 || response.result === false) {
-            message.error('删除失败!');
-        } else {
-            await this.onceUpdateDataSource([id]);
-            message.success('删除成功');
-        }
-    };
-
-    // 批量转换私有客户
-    onSelectChange = (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
-    };
-
-    pushToMyCustomer = async () => {
-        const { UID } = this.props;
-        if (this.fnDebounce) {
-            return;
-        }
-        this.fnDebounce = true;
-        if (this.state.selectedRowKeys.length === 0) {
-            message.warning('请先选择客户', 3, () => {
-                this.fnDebounce = false;
-            });
-            return;
-        }
-        const response = await pushToMyCustomerService({
-            cid: this.state.selectedRowKeys,
-            userID: UID,
-        });
-        if (response === undefined || response[0] === 403 || response[3] === false) {
-            message.error('添加失败');
-            return;
-        }
-        this.onceUpdateDataSource(this.state.selectedRowKeys);
-        this.setState({ selectedRowKeys: [] }, () => {
-            message.success('添加成功', 3, () => {
-                this.fnDebounce = false;
-            });
-        });
+    // 获取要搜索的信息
+    searchNameOrTel = ({ target }) => {
+        this.setState({ searchNameOrTelValue: target.value });
     };
 
     stateSelectChange = (value) => {
@@ -220,23 +181,90 @@ class PublicCustomer extends React.Component {
         this.setState({ selectValue: lsvalue });
     };
 
+    dateChange = (val, dateString) => {
+        const startTime = new Date(emptyOrBlank(val[0], '_d', ''));
+        const endTime = new Date(emptyOrBlank(val[1], '_d', ''));
+        this.setState({
+            dateValue: [moment(startTime), moment(endTime)],
+            dateValueString: dateString,
+        });
+    };
+
+    // 确认查询
+    moreConditionSearch = async () => {
+        let data = [];
+        const { searchNameOrTelValue, selectValue, dateValueString } = this.state;
+        if (searchNameOrTelValue === '' && dateValueString === '' && selectValue === 'none') {
+            message.warning('请输入至少一个条件');
+            return;
+        }
+        const response = await searchCustomerService({
+            searchNameOrTelValue,
+            selectValue,
+            dateValueString,
+        });
+        if (response === undefined || response.code === 403 || response.result.length === 0) {
+            message.error('获取失败或没有数据');
+            data = [];
+        } else {
+            message.success('查询成功');
+            data = response.result;
+        }
+        this.setState({ dataSource: data });
+        console.log(response);
+    };
+
+    // 伪删除事件
+    showDeleteConfirm = (id) => {
+        deleteCustomer(id, this.onceUpdateDataSource);
+    };
+
+    // 批量转换私有客户
+    onSelectChange = (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+    };
+
+    pushToMyCustomer = async () => {
+        const { UID } = this.props;
+        if (this.state.selectedRowKeys.length === 0) {
+            message.warning('请先选择客户');
+        } else {
+            confirm({
+                title: '确定要添加到我的客户吗?',
+                content: '添加后可在我的客户查看',
+                okText: '确定',
+                cancelText: '取消',
+                onOk: async () => {
+                    const response = await pushToMyCustomerService({
+                        id: this.state.selectedRowKeys,
+                        userID: UID,
+                    });
+                    if (response === undefined || response[0] === 403 || response[3] === false) {
+                        message.error('添加失败');
+                        return;
+                    }
+                    this.onceUpdateDataSource(this.state.selectedRowKeys);
+                    this.setState({ selectedRowKeys: [] }, () => {
+                        message.success('添加成功');
+                    });
+                },
+                onCancel: () => {
+                    message.warning('取消添加');
+                },
+            });
+        }
+    };
+
     // 再次更新dataSource
     onceUpdateDataSource = (dataArray) => {
         const { dataSource } = this.state;
-        const arr = dataSource;
-        for (let i = 0; i < arr.length; i += 1) {
-            for (let j = 0; j < dataArray.length; j += 1) {
-                if (arr[i].key === dataArray[j]) {
-                    arr.splice(i, 1);
-                }
-            }
-        }
-        this.setState({ dataSource: arr });
+        const newData = tableUpdateDataProcessing(dataArray, dataSource);
+        this.setState({ dataSource: newData });
     };
 
     /** 渲染页面 */
     render() {
-        const { selectedRowKeys, columns, dataSource, selectValue } = this.state;
+        const { selectedRowKeys, columns, dataSource, selectValue, dateValue } = this.state;
         const rowSelection = {
             selectedRowKeys,
             onChange: this.onSelectChange,
@@ -252,6 +280,7 @@ class PublicCustomer extends React.Component {
                                 style={{ width: '200px' }}
                                 placeholder="请输入"
                                 allowClear
+                                onChange={this.searchNameOrTel}
                             />
                         </Tooltip>
                         <Select
@@ -267,12 +296,22 @@ class PublicCustomer extends React.Component {
                                 请选择
                             </Option>
                             <Option value="all">全部</Option>
-                            <Option value="talked">已沟通</Option>
-                            <Option value="visited">已拜访</Option>
-                            <Option value="done">已签单</Option>
+                            <Option value="1">已沟通</Option>
+                            <Option value="2">已拜访</Option>
+                            <Option value="3">已签单</Option>
                         </Select>
-                        <RangePicker className="margin" locale={locale} />
-                        <Button className="margin" type="primary" icon="search">
+                        <RangePicker
+                            className="margin"
+                            locale={locale}
+                            onChange={this.dateChange}
+                            value={dateValue}
+                        />
+                        <Button
+                            className="margin"
+                            type="primary"
+                            icon="search"
+                            onClick={this.moreConditionSearch}
+                        >
                             查询
                         </Button>
                     </div>

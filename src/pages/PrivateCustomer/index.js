@@ -9,11 +9,8 @@ import router from 'umi/router';
 
 import AddNewPrivateCustomer from '@/components/AddNewPrivateCustomer';
 import UpdateCustomer from '@/components/UpdateCustomer';
-import { deleteMyCustomerService,
-    getCustomerListService,
-    updateCustomerStateService,
-    releaseCustomerService,
-    searchCustomer } from '@/services/customerList';
+import { getCustomerListService, updateCustomerStateService, releaseCustomerService, searchCustomerService } from '@/services/customerList';
+import { deleteCustomer, tableUpdateDataProcessing } from '../../utils/customerGlobal';
 import { emptyOrBlank } from '../../utils/common';
 
 const { confirm } = Modal;
@@ -92,96 +89,82 @@ class PrivateCustomer extends React.Component {
     // 点击查询
     moreConditionSearch = async () => {
         const { UID } = this.props;
+        let data = [];
         const { searchNameOrTelValue, selectValue, dateValueString } = this.state;
         if (searchNameOrTelValue === '' && dateValueString === '' && selectValue === 'none') {
             message.warning('请输入至少一个条件');
             return;
         }
-        const response = await searchCustomer({
+        const response = await searchCustomerService({
             searchNameOrTelValue,
             selectValue,
             dateValueString,
             UID,
         });
-        // const response = await searchCustomer({ searchNameOrTelValue, selectValue, dateValueString });
+        if (response === undefined || response.code === 403 || response.result.length === 0) {
+            message.error('获取失败或没有数据');
+            data = [];
+        } else {
+            message.success('查询成功');
+            data = response.result;
+        }
+        this.setState({ dataSource: data });
+        // const response = await searchCustomerService({ searchNameOrTelValue, selectValue, dateValueString });
         console.log(response);
     };
 
     // 删除事件
     showDeleteConfirm = (id) => {
-        confirm({
-            title: '确定要删除这条信息吗?',
-            content: '删除后数据无法恢复!',
-            okText: '删除',
-            okType: 'danger',
-            cancelText: '取消',
-            onOk: () => {
-                this.onOkDelete(id);
-            },
-            onCancel: () => {
-                message.warning('取消删除');
-            },
+        deleteCustomer(id, this.onceUpdateDataSource);
+    };
+
+    // 单个释放操作
+    showConfirm = ({ id }) => {
+        this.setState({ selectedRowKeys: [id] }, () => {
+            this.twoConfirmationRelease();
         });
     };
 
-    // 确认删除
-    onOkDelete = async (id) => {
-        const response = await deleteMyCustomerService(id);
-        if (response === undefined || response.code === 403 || response.result === false) {
-            message.error('删除失败!');
+    // 添加批量释放的id
+    onSelectChange = (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+    };
+
+    // 批量释放
+    batchConfirm = () => {
+        const idArray = this.state.selectedRowKeys;
+        if (idArray.length === 0) {
+            message.error('没有需要释放的对象');
         } else {
-            await this.onceUpdateDataSource([id]);
-            message.success('删除成功');
+            this.twoConfirmationRelease();
         }
     };
 
-    // 释放操作
-    showConfirm = ({ id }) => {
+    // 二次确认释放
+    twoConfirmationRelease = () => {
         confirm({
             title: '确定要释放到公海吗?',
             content: '释放后可在公海查看',
             okText: '确定',
             cancelText: '取消',
-            onOk: () => {
-                this.setState({ selectedRowKeys: [id] }, () => {
-                    this.onOKshowConfirm();
+            onOk: async () => {
+                const { UName } = this.props;
+                const parames = { UName, id: this.state.selectedRowKeys };
+                const response = await releaseCustomerService(parames);
+                if (response === undefined || response.code === 403 || response.result !== true) {
+                    message.error('释放失败');
+                    return;
+                }
+                this.onceUpdateDataSource(this.state.selectedRowKeys);
+                this.setState({ selectedRowKeys: [] }, () => {
+                    message.success('释放成功');
                 });
             },
             onCancel: () => {
                 message.warning('取消释放');
             },
         });
-    };
-
-    onOKshowConfirm = async () => {
-        const { UName } = this.props;
-        const parames = { UName, id: this.state.selectedRowKeys };
-        const response = await releaseCustomerService(parames);
-        console.log(response);
-        if (response === undefined || response.code === 403 || response.result !== true) {
-            message.error('释放失败');
-            return;
-        }
-        this.onceUpdateDataSource(this.state.selectedRowKeys);
-        this.setState({ selectedRowKeys: [] }, () => {
-            message.success('释放成功');
-        });
-    };
-
-    // 批量释放
-    onSelectChange = (selectedRowKeys) => {
-        // console.log('selectedRowKeys changed: ', selectedRowKeys);
-        this.setState({ selectedRowKeys });
-    };
-
-    batchConfirm = () => {
-        const idArray = this.state.selectedRowKeys;
-        if (idArray.length === 0) {
-            message.error('没有需要释放的对象');
-            return;
-        }
-        this.onOKshowConfirm();
-    };
+    }
 
     // 修改客户状态事件
     stateChange = (e, data) => {
@@ -248,15 +231,8 @@ class PrivateCustomer extends React.Component {
     /** 再次更新dataSource */
     onceUpdateDataSource = (dataArray) => {
         const { dataSource } = this.state;
-        const arr = dataSource;
-        for (let i = 0; i < arr.length; i += 1) {
-            for (let j = 0; j < dataArray.length; j += 1) {
-                if (arr[i].id === dataArray[j]) {
-                    arr.splice(i, 1);
-                }
-            }
-        }
-        this.setState({ dataSource: arr });
+        const newData = tableUpdateDataProcessing(dataArray, dataSource);
+        this.setState({ dataSource: newData });
     };
 
     /** 组件渲染 */
@@ -271,26 +247,36 @@ class PrivateCustomer extends React.Component {
             {
                 title: '公司名称',
                 dataIndex: 'companyName',
+                ellipsis: true,
+                width: '13%',
             },
             {
                 title: '联系人',
                 dataIndex: 'contact',
+                ellipsis: true,
+                width: '8%',
             },
             {
                 title: '联系方式',
                 dataIndex: 'contactTel',
+                ellipsis: true,
+                width: '10%',
             },
             {
                 title: '创建时间',
                 dataIndex: 'createTime',
+                width: '13%',
             },
             {
                 title: '创建人',
                 dataIndex: 'createUserName',
+                ellipsis: true,
+                width: '8%',
             },
             {
                 title: '状态',
                 dataIndex: 'presentState',
+                width: '8%',
                 render: (presentState, data) => (presentState === '3' ? (
                     <span className="redText">已签单</span>
                 ) : (
@@ -318,6 +304,7 @@ class PrivateCustomer extends React.Component {
             {
                 title: '产品',
                 dataIndex: 'product',
+                ellipsis: true,
             },
             {
                 title: '操作',

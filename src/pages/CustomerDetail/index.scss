@@ -5,6 +5,17 @@
     .ant-steps-item-description{
       max-width: 160px;
     }
-
+  }
+}
+.detail-box{
+  padding: 0 10px;
+  backgroundColor: 'white';
+  table tr>td{
+    >span:first-child{
+      float: left;
+    }
+    >span:last-child{
+      max-width: 900px;
+    }
   }
 }

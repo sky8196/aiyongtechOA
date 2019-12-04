@@ -1,16 +1,15 @@
 import React from 'react';
-import '../assets/css/public.css'
-// import '../assets/css/base.css'
+import PropTypes from 'prop-types';
+import '../assets/css/public.css';
 import Header from './Header';
 
-const BasicLayout = props => {
-  return (
+/** 页面入口 */
+const BasicLayout = ({ location: { pathname }, children }) => (
     <div>
-      <Header pathname={props.location.pathname}/>
-      <div className="router-box">{props.children}</div>
-      
+        <Header pathname={pathname} />
+        <div className="router-box">{children}</div>
     </div>
-  );
-};
-
+);
+BasicLayout.defaultProps = { location: '', children: '' };
+BasicLayout.propTypes = { location: PropTypes.any, children: PropTypes.any };
 export default BasicLayout;

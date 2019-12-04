@@ -76,7 +76,7 @@ export async function releaseCustomerService(parames) {
     });
 }
 /**
- * pushToMyCustomerService [释放用户到公海]
+ * pushToMyCustomerService [从公海添加到私有]
  * @author zhuoyue
  * @param parames [数据]
  */
@@ -91,15 +91,15 @@ export async function pushToMyCustomerService(parames) {
     });
 }
 /**
- * searchCustomer [释放用户到公海]
+ * searchCustomerService [释放用户到公海]
  * @param parames [数据]
  * @author zhuoyue
  */
-export async function searchCustomer(parames) {
+export async function searchCustomerService(parames) {
     return request('http://szhtonpal.aiyongbao.com//api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.searchCustomer',
+            method: 'aiyong.foreigntrade.ca.searchCustomerAction',
             namespace: 'ss',
             data: JSON.stringify(parames),
         },

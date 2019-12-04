@@ -13,11 +13,12 @@ class UpdateCustomer extends React.Component {
         this.state = { visible: false };
     }
 
+    // 打modal
     showUpdateCustomer = () => {
-        const visible = true;
-        this.setState({ visible });
+        this.setState({ visible: true });
     };
 
+    // 确认修改
     onOkUpdate = async () => {
         const { form, cid, updatePage } = this.props;
         this.setState({ visible: false });
@@ -31,6 +32,7 @@ class UpdateCustomer extends React.Component {
         }
     };
 
+    // 取消修改
     hideModalUpdate = () => {
         this.setState({ visible: false });
     };

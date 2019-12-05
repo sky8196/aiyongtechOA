@@ -6,7 +6,6 @@ import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
 // import 'moment/locale/zh-cn';
 import router from 'umi/router';
-
 import AddNewPrivateCustomer from '@/components/AddNewPrivateCustomer';
 import UpdateCustomer from '@/components/UpdateCustomer';
 import { getCustomerListService, updateCustomerStateService, releaseCustomerService, searchCustomerService } from '@/services/customerList';
@@ -54,7 +53,6 @@ class PrivateCustomer extends React.Component {
 
     getDataSource = async (id) => {
         const response = await getCustomerListService(id);
-        console.log(response);
         let data = [];
         if (response === undefined || response.code === 403) {
             message.error('获取失败或没有数据');
@@ -109,8 +107,6 @@ class PrivateCustomer extends React.Component {
             data = response.result;
         }
         this.setState({ dataSource: data });
-        // const response = await searchCustomerService({ searchNameOrTelValue, selectValue, dateValueString });
-        console.log(response);
     };
 
     // 删除事件
@@ -149,13 +145,14 @@ class PrivateCustomer extends React.Component {
             cancelText: '取消',
             onOk: async () => {
                 const { UName } = this.props;
-                const parames = { UName, id: this.state.selectedRowKeys };
+                const parames = { UName, idArray: this.state.selectedRowKeys };
+                console.log(parames);
                 const response = await releaseCustomerService(parames);
                 if (response === undefined || response.code === 403 || response.result !== true) {
                     message.error('释放失败');
                     return;
                 }
-                this.onceUpdateDataSource(this.state.selectedRowKeys);
+                await this.onceUpdateDataSource(this.state.selectedRowKeys);
                 this.setState({ selectedRowKeys: [] }, () => {
                     message.success('释放成功');
                 });
@@ -193,7 +190,7 @@ class PrivateCustomer extends React.Component {
         this.setState({ updateStataDetail: value });
     };
 
-    // 确认修改
+    // 确认修改状态
     handleOk = () => {
         const { lsData, value, id } = this.state.visibleData;
         lsData.forEach(async (val) => {
@@ -213,7 +210,7 @@ class PrivateCustomer extends React.Component {
         });
     };
 
-    // 取消修改
+    // 取消修改状态
     handleCancel = () => {
         const { dataSourceOld } = this.state;
         this.setState({ visibleUpdateState: false, dataSource: dataSourceOld }, () => {
@@ -229,9 +226,9 @@ class PrivateCustomer extends React.Component {
     };
 
     /** 再次更新dataSource */
-    onceUpdateDataSource = (dataArray) => {
+    onceUpdateDataSource = (conditionArray) => {
         const { dataSource } = this.state;
-        const newData = tableUpdateDataProcessing(dataArray, dataSource);
+        const newData = tableUpdateDataProcessing(conditionArray, dataSource);
         this.setState({ dataSource: newData });
     };
 

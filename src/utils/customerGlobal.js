@@ -1,5 +1,5 @@
 import { message, Modal } from 'antd';
-import { deleteMyCustomerService } from '@/services/customerList';
+import { deleteCustomerService } from '@/services/customerList';
 
 const { confirm } = Modal;
 /**
@@ -17,7 +17,7 @@ export function deleteCustomer(id, onceUpdateDataSource) {
         okType: 'danger',
         cancelText: '取消',
         onOk: async () => {
-            const response = await deleteMyCustomerService(id);
+            const response = await deleteCustomerService(id);
             if (response === undefined || response.code === 403 || response.result === false) {
                 message.error('删除失败!');
             } else {
@@ -40,7 +40,7 @@ export function deleteCustomer(id, onceUpdateDataSource) {
 export function tableUpdateDataProcessing(conditionArray, dataSource) {
     const arr = dataSource;
     for (let i = 0; i < arr.length; i += 1) {
-        for (let j = 0; j < arr.length; j += 1) {
+        for (let j = 0; j < conditionArray.length; j += 1) {
             if (arr[i].id === conditionArray[j]) {
                 arr.splice(i, 1);
             }

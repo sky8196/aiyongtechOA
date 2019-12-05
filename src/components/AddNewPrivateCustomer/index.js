@@ -29,7 +29,6 @@ class AddNewPrivateCustomer extends React.Component {
 
     /** 检测公司名字是否为空 */
     testRegistered = ({ target: { value } }) => {
-        console.log(value);
         if (value === '') {
             this.setState({
                 hasFeedback: true,
@@ -42,9 +41,8 @@ class AddNewPrivateCustomer extends React.Component {
     };
 
     /** 检测公司名字是否可用 */
-    getRegister = async (name) => {
-        const response = await testRegisterService(name);
-        console.log(response);
+    getRegister = async (companyName) => {
+        const response = await testRegisterService(companyName);
         if (response === undefined || response.result === false) {
             this.setState({
                 hasFeedback: false,
@@ -77,12 +75,12 @@ class AddNewPrivateCustomer extends React.Component {
             form.validateFields(async (errors) => {
                 if (!errors) {
                     const data = Object.assign(form.getFieldsValue(), { UID, UName });
-                    console.log('确认添加');
                     const response = await insertMyCustomerService(data);
                     if (response === undefined || response.code === 403) {
                         message.error('保存失败');
                     } else {
-                        message.success('保存成功');
+                        const hide = message.loading('正在保存请稍后...', 0);
+                        await setTimeout(hide, 1500);
                     }
                     form.resetFields();
                     this.setState({

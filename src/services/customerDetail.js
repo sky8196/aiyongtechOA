@@ -7,7 +7,7 @@ async function getCustomerDetailService(id) {
     return request('http://szhtonpal.aiyongbao.com/api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.getCustomerDetailAction',
+            method: 'aiyong.foreigntrade.ca.getcustomerdetail',
             namespace: 'ss',
             id,
         },

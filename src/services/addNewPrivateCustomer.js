@@ -4,28 +4,38 @@ import request from '@/utils/request';
  * @author zhuoyue
  * @param string name [公司名字]
  */
-export async function testRegisterService(name) {
+export async function testRegisterService(companyName) {
     return request('http://szhtonpal.aiyongbao.com//api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.registeredAction',
+            method: 'aiyong.foreigntrade.ca.registered',
             namespace: 'ss',
-            name,
+            companyName,
         },
     });
 }
 /**
  * insertMyCustomerService [新增客户]
  * @author zhuoyue
- * @param json form [表单数据]
+ * @param string companyName [公司名称]
+ * @param string contact [联系人]
+ * @param string contactTel [联系人电话]
+ * @param string product [产品]
+ * @param int UID [用户UID|归属用户]
+ * @param string UName [用户名称|创建人名称]
  */
-export async function insertMyCustomerService(form) {
+export async function insertMyCustomerService({ companyName, contact, contactTel, product, UID, UName }) {
     return request('http://szhtonpal.aiyongbao.com//api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.insertMyCustomerAction',
+            method: 'aiyong.foreigntrade.ca.insertmycustomer',
             namespace: 'ss',
-            form: JSON.stringify(form),
+            companyName,
+            contact,
+            contactTel,
+            product,
+            UID,
+            UName,
         },
     });
 }

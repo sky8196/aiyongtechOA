@@ -23,18 +23,21 @@ class UpdateCustomer extends React.Component {
         const { form, cid, updatePage } = this.props;
         this.setState({ visible: false });
         const data = await Object.assign(form.getFieldsValue(), { id: cid });
-        const response = await updateCustomerService({ data });
+        const response = await updateCustomerService(data);
         if (response === undefined || response.code === 403 || response.result === false) {
             message.error('修改失败!');
         } else {
+            const hide = message.loading('正在保存请稍后...', 0);
             await updatePage();
-            await message.success('修改成功');
+            await setTimeout(hide, 1500);
+            await message.success('修改成功', 2);
         }
     };
 
     // 取消修改
     hideModalUpdate = () => {
         this.setState({ visible: false });
+        message.warning('取消修改');
     };
 
     /** 组件渲染 */
@@ -83,7 +86,7 @@ class UpdateCustomer extends React.Component {
                                 )}
                             </Form.Item>
                             <Form.Item label="产品" {...formItemLayout}>
-                                {getFieldDecorator('product', { initialValue: record.product,rules: [{ required: true, message: '不能为空' }] })(
+                                {getFieldDecorator('product', { initialValue: record.product, rules: [{ required: true, message: '不能为空' }] })(
                                     <TextArea
                                         targ="product"
                                         placeholder=""

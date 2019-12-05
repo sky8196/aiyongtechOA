@@ -236,14 +236,14 @@ class PublicCustomer extends React.Component {
                 cancelText: '取消',
                 onOk: async () => {
                     const response = await pushToMyCustomerService({
-                        id: this.state.selectedRowKeys,
-                        userID: UID,
+                        idArray: this.state.selectedRowKeys,
+                        UID,
                     });
                     if (response === undefined || response[0] === 403 || response[3] === false) {
                         message.error('添加失败');
                         return;
                     }
-                    this.onceUpdateDataSource(this.state.selectedRowKeys);
+                    await this.onceUpdateDataSource(this.state.selectedRowKeys);
                     this.setState({ selectedRowKeys: [] }, () => {
                         message.success('添加成功');
                     });
@@ -256,9 +256,9 @@ class PublicCustomer extends React.Component {
     };
 
     // 再次更新dataSource
-    onceUpdateDataSource = (dataArray) => {
+    onceUpdateDataSource = (conditionArray) => {
         const { dataSource } = this.state;
-        const newData = tableUpdateDataProcessing(dataArray, dataSource);
+        const newData = tableUpdateDataProcessing(conditionArray, dataSource);
         this.setState({ dataSource: newData });
     };
 

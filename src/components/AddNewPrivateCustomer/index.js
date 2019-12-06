@@ -64,7 +64,6 @@ class AddNewPrivateCustomer extends React.Component {
     onOk = async () => {
         const { refreshList, UID, UName, form } = this.props;
         const { registerName } = this.state;
-        console.log(registerName);
         if (registerName === false) {
             this.setState({
                 hasFeedback: true,
@@ -80,7 +79,7 @@ class AddNewPrivateCustomer extends React.Component {
                         message.error('保存失败');
                     } else {
                         const hide = message.loading('正在保存请稍后...', 0);
-                        await setTimeout(hide, 1500);
+                        await setTimeout(hide, 1000);
                     }
                     form.resetFields();
                     this.setState({

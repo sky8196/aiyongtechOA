@@ -24,7 +24,6 @@ class CustomerDetail extends React.Component {
     /** 组件挂载 */
     componentDidMount() {
         const { id } = this.state;
-        console.log(id);
         this.getCustomerDetail(id);
     }
 
@@ -41,7 +40,6 @@ class CustomerDetail extends React.Component {
             return data;
         }
         data = response.result;
-        console.log(data);
         return data;
     };
 
@@ -49,7 +47,6 @@ class CustomerDetail extends React.Component {
     render() {
         const { list, link } = this.state;
         const current = list.presentState;
-        // console.log(current);
         return (
             <div className="detail-box">
                 <Card

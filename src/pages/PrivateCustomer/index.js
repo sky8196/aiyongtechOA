@@ -1,21 +1,21 @@
 import React from 'react';
 import { connect } from 'dva';
 import PropTypes from 'prop-types';
-import { Button, Input, DatePicker, Table, Empty, Tooltip, Divider, Select, Modal, message } from 'antd';
-import locale from 'antd/es/date-picker/locale/zh_CN';
+import { Button, Input, Table, Empty, Divider, Select, Modal, message } from 'antd';
+
 import moment from 'moment';
 // import 'moment/locale/zh-cn';
 import router from 'umi/router';
 import AddNewPrivateCustomer from '@/components/AddNewPrivateCustomer';
 import UpdateCustomer from '@/components/UpdateCustomer';
-import { getCustomerListService, updateCustomerStateService, releaseCustomerService, searchCustomerService } from '@/services/customerList';
+import MoreConditionSearch from '@/components/MoreConditionSearch';
+import { getCustomerListService, updateCustomerStateService, releaseCustomerService } from '@/services/customerList';
 import { deleteCustomer, tableUpdateDataProcessing } from '../../utils/customerGlobal';
-import { emptyOrBlank } from '../../utils/common';
+
 
 const { confirm } = Modal;
 
 moment.locale('zh-cn');
-const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 /** 私有客户页面 */
@@ -31,10 +31,6 @@ class PrivateCustomer extends React.Component {
             visibleUpdateState: false, // 修改状态时控制Model的显隐
             updateStataDetail: '', // 临时存储修改状态时备注中数据
             selectedRowKeys: [], // Check here to configure the default column
-            dateValue: null,
-            searchNameOrTelValue: '',
-            selectValue: 'none',
-            dateValueString: '',
         };
     }
 
@@ -47,9 +43,8 @@ class PrivateCustomer extends React.Component {
     /** 异步请求数据 */
     getMyCustomer = async (id) => {
         const data = await this.getDataSource(id);
-        // console.log(data);
         this.setState({ dataSource: data });
-    }
+    };
 
     getDataSource = async (id) => {
         const response = await getCustomerListService(id);
@@ -62,50 +57,8 @@ class PrivateCustomer extends React.Component {
         return data;
     };
 
-    // 获取要搜索的信息
-    searchNameOrTel = ({ target }) => {
-        this.setState({ searchNameOrTelValue: target.value });
-    };
-
-    stateSelectChange = (value) => {
-        let lsvalue = value;
-        if (lsvalue === undefined) {
-            lsvalue = 'none';
-        }
-        this.setState({ selectValue: lsvalue });
-    };
-
-    dateChange = (val, dateString) => {
-        const startTime = new Date(emptyOrBlank(val[0], '_d', ''));
-        const endTime = new Date(emptyOrBlank(val[1], '_d', ''));
-        this.setState({
-            dateValue: [moment(startTime), moment(endTime)],
-            dateValueString: dateString,
-        });
-    };
-
-    // 点击查询
-    moreConditionSearch = async () => {
-        const { UID } = this.props;
-        let data = [];
-        const { searchNameOrTelValue, selectValue, dateValueString } = this.state;
-        if (searchNameOrTelValue === '' && dateValueString === '' && selectValue === 'none') {
-            message.warning('请输入至少一个条件');
-            return;
-        }
-        const response = await searchCustomerService({
-            searchNameOrTelValue,
-            selectValue,
-            dateValueString,
-            UID,
-        });
-        if (response === undefined || response.code === 403 || response.result.length === 0) {
-            message.error('获取失败或没有数据');
-            data = [];
-        } else {
-            message.success('查询成功');
-            data = response.result;
-        }
+    // 查询更新DataSource
+    updateDataSource = (data) => {
         this.setState({ dataSource: data });
     };
 
@@ -146,7 +99,6 @@ class PrivateCustomer extends React.Component {
             onOk: async () => {
                 const { UName } = this.props;
                 const parames = { UName, idArray: this.state.selectedRowKeys };
-                console.log(parames);
                 const response = await releaseCustomerService(parames);
                 if (response === undefined || response.code === 403 || response.result !== true) {
                     message.error('释放失败');
@@ -161,7 +113,7 @@ class PrivateCustomer extends React.Component {
                 message.warning('取消释放');
             },
         });
-    }
+    };
 
     // 修改客户状态事件
     stateChange = (e, data) => {
@@ -221,7 +173,6 @@ class PrivateCustomer extends React.Component {
 
     // 清除修改状态时产生的临时数据
     clearUpdateTemporaryData = () => {
-        console.log('clear');
         this.setState({ dataSourceOld: [], visibleData: {}, updateStataDetail: '' });
     };
 
@@ -234,8 +185,8 @@ class PrivateCustomer extends React.Component {
 
     /** 组件渲染 */
     render() {
-        const { UID } = this.props;
-        const { selectedRowKeys, dataSource, dateValue, rootPower, selectValue, visibleUpdateState, updateStataDetail } = this.state;
+        const { UID, match } = this.props;
+        const { selectedRowKeys, dataSource, rootPower, visibleUpdateState, updateStataDetail } = this.state;
         const rowSelection = {
             selectedRowKeys,
             onChange: this.onSelectChange,
@@ -368,47 +319,7 @@ class PrivateCustomer extends React.Component {
         return (
             <div>
                 <div id="topmain">
-                    <div className="topmain-left">
-                        <Tooltip placement="bottomLeft" title="公司名称或联系人或电话">
-                            <Input
-                                className="margin"
-                                style={{ width: '200px' }}
-                                placeholder="请输入"
-                                allowClear
-                                onChange={this.searchNameOrTel}
-                            />
-                        </Tooltip>
-                        <Select
-                            className="margin"
-                            defaultValue="none"
-                            value={selectValue}
-                            onChange={this.stateSelectChange}
-                            style={{ width: '200px' }}
-                            allowClear
-                        >
-                            <Option style={{ display: 'none' }} value="none">
-                                请选择
-                            </Option>
-                            <Option value="all">全部</Option>
-                            <Option value="1">已沟通</Option>
-                            <Option value="2">已拜访</Option>
-                            <Option value="3">已签单</Option>
-                        </Select>
-                        <RangePicker
-                            className="margin"
-                            onChange={this.dateChange}
-                            value={dateValue}
-                            locale={locale}
-                        />
-                        <Button
-                            className="margin"
-                            type="primary"
-                            icon="search"
-                            onClick={this.moreConditionSearch}
-                        >
-                            查询
-                        </Button>
-                    </div>
+                    <MoreConditionSearch updateDataSource={this.updateDataSource} link={match.url} />
                     <div className="topmain-right">
                         <Button className="inlineRight margin" icon="rollback">
                             返回OA
@@ -460,6 +371,6 @@ class PrivateCustomer extends React.Component {
         );
     }
 }
-PrivateCustomer.defaultProps = { UID: 0, UName: '' };
-PrivateCustomer.propTypes = { UID: PropTypes.any, UName: PropTypes.any };
+PrivateCustomer.defaultProps = { UID: 0, UName: '', match: '' };
+PrivateCustomer.propTypes = { UID: PropTypes.any, UName: PropTypes.any, match: PropTypes.any };
 export default connect(({ login: { UID, UName } }) => ({ UID, UName }))(PrivateCustomer);

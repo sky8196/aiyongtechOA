@@ -1,22 +1,18 @@
 import React from 'react';
-import { Button, Input, DatePicker, Select, Table, Empty, Tooltip, Divider, message, Modal } from 'antd';
+import { Button, Table, Empty, Divider, message, Modal } from 'antd';
 import router from 'umi/router';
 import { connect } from 'dva';
 import PropTypes from 'prop-types';
-import locale from 'antd/es/date-picker/locale/zh_CN';
 import './index.scss';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import { getCustomerListService, pushToMyCustomerService, searchCustomerService } from '@/services/customerList';
-
+import { getCustomerListService, pushToMyCustomerService } from '@/services/customerList';
+import MoreConditionSearch from '@/components/MoreConditionSearch';
 import UpdateCustomer from '@/components/UpdateCustomer';
-import { emptyOrBlank } from '@/utils/common';
 import { tableUpdateDataProcessing, deleteCustomer } from '@/utils/customerGlobal';
 
 moment.locale('zh-cn');
 const { confirm } = Modal;
-const { RangePicker } = DatePicker;
-const { Option } = Select;
 
 /** 公海页面 */
 class PublicCustomer extends React.Component {
@@ -28,12 +24,7 @@ class PublicCustomer extends React.Component {
             dataSource: [],
             selectedRowKeys: [],
             columns: [],
-            selectValue: 'none',
-            searchNameOrTelValue: '',
-            dateValueString: '',
         };
-        // console.log(this.props);
-        // console.log('当前用户', this.state.userID);
     }
 
     /** 组件挂载 */
@@ -66,7 +57,7 @@ class PublicCustomer extends React.Component {
                 width: '10%',
             },
             {
-                title: '释放时间',
+                title: '最后释放时间',
                 dataIndex: 'lastReleaseTime',
                 width: '13%',
             },
@@ -159,7 +150,6 @@ class PublicCustomer extends React.Component {
     getDataSource = async () => {
         const response = await getCustomerListService();
         let data = [];
-        console.log(response);
         if (response === undefined || response.code === 403) {
             message.error('获取失败或没有数据');
             return data;
@@ -168,50 +158,9 @@ class PublicCustomer extends React.Component {
         return data;
     };
 
-    // 获取要搜索的信息
-    searchNameOrTel = ({ target }) => {
-        this.setState({ searchNameOrTelValue: target.value });
-    };
-
-    stateSelectChange = (value) => {
-        let lsvalue = value;
-        if (lsvalue === undefined) {
-            lsvalue = 'none';
-        }
-        this.setState({ selectValue: lsvalue });
-    };
-
-    dateChange = (val, dateString) => {
-        const startTime = new Date(emptyOrBlank(val[0], '_d', ''));
-        const endTime = new Date(emptyOrBlank(val[1], '_d', ''));
-        this.setState({
-            dateValue: [moment(startTime), moment(endTime)],
-            dateValueString: dateString,
-        });
-    };
-
-    // 确认查询
-    moreConditionSearch = async () => {
-        let data = [];
-        const { searchNameOrTelValue, selectValue, dateValueString } = this.state;
-        if (searchNameOrTelValue === '' && dateValueString === '' && selectValue === 'none') {
-            message.warning('请输入至少一个条件');
-            return;
-        }
-        const response = await searchCustomerService({
-            searchNameOrTelValue,
-            selectValue,
-            dateValueString,
-        });
-        if (response === undefined || response.code === 403 || response.result.length === 0) {
-            message.error('获取失败或没有数据');
-            data = [];
-        } else {
-            message.success('查询成功');
-            data = response.result;
-        }
+    // 查询更新DataSource
+    updateDataSource = (data) => {
         this.setState({ dataSource: data });
-        console.log(response);
     };
 
     // 伪删除事件
@@ -264,7 +213,8 @@ class PublicCustomer extends React.Component {
 
     /** 渲染页面 */
     render() {
-        const { selectedRowKeys, columns, dataSource, selectValue, dateValue } = this.state;
+        const { match } = this.props;
+        const { selectedRowKeys, columns, dataSource } = this.state;
         const rowSelection = {
             selectedRowKeys,
             onChange: this.onSelectChange,
@@ -273,48 +223,7 @@ class PublicCustomer extends React.Component {
         return (
             <div>
                 <div id="topmain">
-                    <div className="topmain-left">
-                        <Tooltip placement="bottomLeft" title="公司名称或联系人或电话">
-                            <Input
-                                className="margin"
-                                style={{ width: '200px' }}
-                                placeholder="请输入"
-                                allowClear
-                                onChange={this.searchNameOrTel}
-                            />
-                        </Tooltip>
-                        <Select
-                            id="stateSelect"
-                            className="margin"
-                            defaultValue="none"
-                            value={selectValue}
-                            style={{ width: '200px' }}
-                            allowClear
-                            onChange={this.stateSelectChange}
-                        >
-                            <Option style={{ display: 'none' }} value="none">
-                                请选择
-                            </Option>
-                            <Option value="all">全部</Option>
-                            <Option value="1">已沟通</Option>
-                            <Option value="2">已拜访</Option>
-                            <Option value="3">已签单</Option>
-                        </Select>
-                        <RangePicker
-                            className="margin"
-                            locale={locale}
-                            onChange={this.dateChange}
-                            value={dateValue}
-                        />
-                        <Button
-                            className="margin"
-                            type="primary"
-                            icon="search"
-                            onClick={this.moreConditionSearch}
-                        >
-                            查询
-                        </Button>
-                    </div>
+                    <MoreConditionSearch updateDataSource={this.updateDataSource} link={match.url} />
                     <div className="topmain-right">
                         <Button className="inlineRight margin" icon="rollback">
                             返回OA
@@ -353,6 +262,6 @@ class PublicCustomer extends React.Component {
         );
     }
 }
-PublicCustomer.defaultProps = { UID: 0 };
-PublicCustomer.propTypes = { UID: PropTypes.any };
+PublicCustomer.defaultProps = { UID: 0, match: '' };
+PublicCustomer.propTypes = { UID: PropTypes.any, match: PropTypes.any };
 export default connect(({ login: { UID } }) => ({ UID }))(PublicCustomer);

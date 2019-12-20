@@ -1,26 +1,19 @@
 import pageRoutes from './router.config';
+import proxy from './proxy.config';
 // ref: https://umijs.org/config/
 const config = {
+    proxy,
     history: 'hash',
     treeShaking: true,
     routes: pageRoutes,
-    publicPath: '/aiyongtechOA/dist/',
-    /* [
-    {
-      path: '/',
-      component: '../layouts/index',
-      routes: [
-        { path: '/', component: '../pages/index' }
-      ]
-    }
-  ], */
+    publicPath: '/dist/',
     plugins: [
     // ref: https://umijs.org/plugin/umi-plugin-react.html
         ['umi-plugin-react', {
             antd: true,
             dva: true,
             dynamicImport: false,
-            title: 'public',
+            title: '新OA',
             dll: false,
 
             routes: {

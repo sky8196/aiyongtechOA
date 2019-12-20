@@ -5,10 +5,10 @@ import request from '@/utils/request';
  * @param int UID [用户UID]
  */
 export async function getCustomerListService(UID) {
-    return request('http://szhtonpal.aiyongbao.com//api', {
+    return request('/api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.getcustomerlist',
+            method: 'aiyong.tonpaladmin.newoa.getcustomerlist',
             namespace: 'ss',
             UID,
         },
@@ -20,10 +20,10 @@ export async function getCustomerListService(UID) {
  * @param int id [用户id]
  */
 export async function deleteCustomerService(id) {
-    return request('http://szhtonpal.aiyongbao.com//api', {
+    return request('/api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.deletecustomer',
+            method: 'aiyong.tonpaladmin.newoa.deletecustomer',
             namespace: 'ss',
             id,
         },
@@ -38,10 +38,10 @@ export async function deleteCustomerService(id) {
  * @param int id [客户id]
  */
 export async function updateCustomerService({ contact, contactTel, product, id }) {
-    return request('http://szhtonpal.aiyongbao.com//api', {
+    return request('/api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.updatecustomer',
+            method: 'aiyong.tonpaladmin.newoa.updatecustomer',
             namespace: 'ss',
             contact,
             contactTel,
@@ -58,10 +58,10 @@ export async function updateCustomerService({ contact, contactTel, product, id }
  * @param int id [客户id]
  */
 export async function updateCustomerStateService({ note, presentState, id }) {
-    return request('http://szhtonpal.aiyongbao.com//api', {
+    return request('/api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.updatecustomerstate',
+            method: 'aiyong.tonpaladmin.newoa.updatecustomerstate',
             namespace: 'ss',
             note,
             presentState,
@@ -76,10 +76,10 @@ export async function updateCustomerStateService({ note, presentState, id }) {
  * @param array idArray [需要修改的id]
  */
 export async function releaseCustomerService({ UName, idArray }) {
-    return request('http://szhtonpal.aiyongbao.com//api', {
+    return request('/api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.releasecustomer',
+            method: 'aiyong.tonpaladmin.newoa.releasecustomer',
             namespace: 'ss',
             UName,
             idArray: JSON.stringify(idArray),
@@ -93,10 +93,10 @@ export async function releaseCustomerService({ UName, idArray }) {
  * @param array idArray [需要修改的id]
  */
 export async function pushToMyCustomerService({ UID, idArray }) {
-    return request('http://szhtonpal.aiyongbao.com//api', {
+    return request('/api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.pushtomycustomer',
+            method: 'aiyong.tonpaladmin.newoa.pushtomycustomer',
             namespace: 'ss',
             UID,
             idArray: JSON.stringify(idArray),
@@ -106,15 +106,15 @@ export async function pushToMyCustomerService({ UID, idArray }) {
 /**
  * searchCustomerService [模糊查询]
  * @author zhuoyue
- * @param array idArray [需要修改的id]
+ * @param array parames [需要修改的id]
  * @param array idArray [需要修改的id]
  * @param array idArray [需要修改的id]
  */
 export async function searchCustomerService(parames) {
-    return request('http://szhtonpal.aiyongbao.com//api', {
+    return request('/api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.searchcustomer',
+            method: 'aiyong.tonpaladmin.newoa.searchcustomer',
             namespace: 'ss',
             data: JSON.stringify(parames),
         },

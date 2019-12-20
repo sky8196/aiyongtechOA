@@ -20,7 +20,7 @@ class PublicCustomer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rootPower: 1, // root权限控制
+            rootPower: '29', // root权限控制
             dataSource: [],
             selectedRowKeys: [],
             columns: [],
@@ -150,7 +150,7 @@ class PublicCustomer extends React.Component {
     getDataSource = async () => {
         const response = await getCustomerListService();
         let data = [];
-        if (response === undefined || response.code === 403) {
+        if (response === undefined || response.code === 403 || response.code === 404) {
             message.error('获取失败或没有数据');
             return data;
         }
@@ -225,7 +225,7 @@ class PublicCustomer extends React.Component {
                 <div id="topmain">
                     <MoreConditionSearch updateDataSource={this.updateDataSource} link={match.url} />
                     <div className="topmain-right">
-                        <Button className="inlineRight margin" icon="rollback">
+                        <Button className="inlineRight margin" icon="rollback" onClick={() => { window.location.href = '/index-transfer.shtml'; return 0; }}>
                             返回OA
                         </Button>
                         <Button

@@ -64,6 +64,7 @@ class MoreConditionSearch extends React.Component {
         const response = await searchCustomerService(parames);
         if (response === undefined || response.code === 403 || response.result.length === 0) {
             message.error('获取失败或没有数据');
+            updateDataSource([]);
         } else {
             message.success('查询成功');
             data = response.result;
@@ -75,7 +76,7 @@ class MoreConditionSearch extends React.Component {
     render() {
         const { dateValue, selectValue } = this.state;
         return (
-            <div className="topmain-left">
+            <div className="topmain-left" style={{ marginLeft: 10 }}>
                 <Tooltip placement="bottomLeft" title="公司名称或联系人或电话">
                     <Input
                         className="margin"

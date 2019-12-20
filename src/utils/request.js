@@ -66,4 +66,14 @@ const request = extend({
     credentials: 'include', // 默认请求是否带上cookie
 });
 
+/** 拦截响应判断登录状态 */
+request.interceptors.response.use(async (res) => {
+    const data = await res.clone().json();
+    if (data.code == 404) {
+        window.location.href = '/login.shtml';
+        return {};
+    }
+    return res;
+});
+
 export default request;

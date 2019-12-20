@@ -5,10 +5,10 @@ import request from '@/utils/request';
  * @param string name [公司名字]
  */
 export async function testRegisterService(companyName) {
-    return request('http://szhtonpal.aiyongbao.com//api', {
+    return request('/api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.registered',
+            method: 'aiyong.tonpaladmin.newoa.registered',
             namespace: 'ss',
             companyName,
         },
@@ -25,10 +25,10 @@ export async function testRegisterService(companyName) {
  * @param string UName [用户名称|创建人名称]
  */
 export async function insertMyCustomerService({ companyName, contact, contactTel, product, UID, UName }) {
-    return request('http://szhtonpal.aiyongbao.com//api', {
+    return request('/api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.insertmycustomer',
+            method: 'aiyong.tonpaladmin.newoa.insertmycustomer',
             namespace: 'ss',
             companyName,
             contact,

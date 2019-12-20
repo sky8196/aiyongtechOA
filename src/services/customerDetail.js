@@ -1,13 +1,13 @@
 import request from '@/utils/request';
 /**
  * getCustomerDetailService [获取客户详情]
- * @author lishen
+ * @author zhuoyue
  */
 async function getCustomerDetailService(id) {
-    return request('http://szhtonpal.aiyongbao.com/api', {
+    return request('/api', {
         method: 'POST',
         data: {
-            method: 'aiyong.foreigntrade.ca.getcustomerdetail',
+            method: 'aiyong.tonpaladmin.newoa.getcustomerdetail',
             namespace: 'ss',
             id,
         },

@@ -24,7 +24,7 @@ class PrivateCustomer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rootPower: 1, // root权限控制
+            rootPower: '29', // root权限控制
             dataSource: [], // 渲染tabel的数据
             dataSourceOld: [], // table旧数据-用于回退
             visibleData: {}, // 修改状态临时存储的数据
@@ -47,6 +47,7 @@ class PrivateCustomer extends React.Component {
     };
 
     getDataSource = async (id) => {
+        if (id === 0) { return []; }
         const response = await getCustomerListService(id);
         let data = [];
         if (response === undefined || response.code === 403) {
@@ -321,7 +322,7 @@ class PrivateCustomer extends React.Component {
                 <div id="topmain">
                     <MoreConditionSearch updateDataSource={this.updateDataSource} link={match.url} />
                     <div className="topmain-right">
-                        <Button className="inlineRight margin" icon="rollback">
+                        <Button className="inlineRight margin" icon="rollback" onClick={() => { window.location.href = '/index-transfer.shtml'; return 0; }}>
                             返回OA
                         </Button>
                         <Button

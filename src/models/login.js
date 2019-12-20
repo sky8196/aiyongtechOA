@@ -1,9 +1,21 @@
 export default {
-    namespaces: 'login',
+    namespace: 'login',
     state: {
-        UID: 1, // 1  //2 // 3
-        UName: '小李', // 小李 // 小张 // 小王
+        UID: 0, // 1  //2 // 3
+        UName: '', // 小李 // 小张 // 小王
     },
     effects: {},
-    reducers: {},
+    reducers: {
+        /** 更新state */
+        setStart(state, { payload }) {
+            return { ...state, ...payload };
+        },
+        /**  */
+        getSession(state, { payload }) {
+            return {
+                UID: payload.id,
+                UName: payload.name,
+            };
+        },
+    },
 };

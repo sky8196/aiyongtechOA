@@ -24,7 +24,7 @@ class PrivateCustomer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rootPower: '29', // root权限控制
+            rootPower: '2', // root权限控制
             dataSource: [], // 渲染tabel的数据
             dataSourceOld: [], // table旧数据-用于回退
             visibleData: {}, // 修改状态临时存储的数据
@@ -51,7 +51,6 @@ class PrivateCustomer extends React.Component {
         const response = await getCustomerListService(id);
         let data = [];
         if (response === undefined || response.code === 403) {
-            message.error('获取失败或没有数据');
             return data;
         }
         data = response.result;
@@ -186,7 +185,7 @@ class PrivateCustomer extends React.Component {
 
     /** 组件渲染 */
     render() {
-        const { UID, match } = this.props;
+        const { UID, match, authorityState } = this.props;
         const { selectedRowKeys, dataSource, rootPower, visibleUpdateState, updateStataDetail } = this.state;
         const rowSelection = {
             selectedRowKeys,
@@ -258,7 +257,7 @@ class PrivateCustomer extends React.Component {
             {
                 title: '操作',
                 dataIndex: 'id',
-                render: (id, record) => (UID !== rootPower ? (
+                render: (id, record) => (authorityState !== rootPower ? (
                     <span>
                         <span
                             className="blueText"
@@ -372,6 +371,6 @@ class PrivateCustomer extends React.Component {
         );
     }
 }
-PrivateCustomer.defaultProps = { UID: 0, UName: '', match: '' };
-PrivateCustomer.propTypes = { UID: PropTypes.any, UName: PropTypes.any, match: PropTypes.any };
-export default connect(({ login: { UID, UName } }) => ({ UID, UName }))(PrivateCustomer);
+PrivateCustomer.defaultProps = { UID: 0, UName: '', match: '', authorityState: '' };
+PrivateCustomer.propTypes = { UID: PropTypes.any, UName: PropTypes.any, match: PropTypes.any, authorityState: PropTypes.any };
+export default connect(({ login: { UID, UName, authorityState } }) => ({ UID, UName, authorityState }))(PrivateCustomer);

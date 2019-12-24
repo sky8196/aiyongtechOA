@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Descriptions, Button, Steps, message } from 'antd';
+import { Card, Descriptions, Button, Steps } from 'antd';
 import Link from 'umi/link';
 import PropTypes from 'prop-types';
 import getCustomerDetailService from '@/services/customerDetail';
@@ -36,7 +36,6 @@ class CustomerDetail extends React.Component {
         const response = await getCustomerDetailService(params);
         let data = {};
         if (response === undefined || response.code === 403) {
-            message.error('获取失败或没有数据');
             return data;
         }
         data = response.result;

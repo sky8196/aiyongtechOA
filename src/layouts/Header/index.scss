@@ -1,27 +1,35 @@
 $borderBlue:rgba(34, 128, 251, 0.6);
 $textBlue:rgba(34, 128, 251, 0.8);
 
-#header {
+.hearder{
+  display: flex;
+  justify-content: space-between;
+  background-color:white;
+  .nav {
     height: 40px;
-    background-color:white;
-    // background-color:#999;
     display: flex;
     text-align: center;
-    .header-a-box{
-      height: 100%;
-      width: 75px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      a{
-        display: block;
-        height: 24px;
-        color: #666;   
-      }
-      a.active{
-        color: $textBlue;
-        border-bottom: 2px solid $borderBlue;
-      }
-    }
-    
+
   }
+  .header-a-box{
+    height: 100%;
+    width: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    a{
+      display: block;
+      height: 24px;
+      color: #666;
+    }
+    a.active{
+      color: $textBlue;
+      border-bottom: 2px solid $borderBlue;
+    }
+  }
+  .hearder-right{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

@@ -33,7 +33,7 @@ const errorHandler = (error) => {
     const { status, url } = response;
 
     if (status === 401) {
-        window.location.href = '/login.shtml';
+        window.location.href = '/Login.shtml';
         // @HACK
         /* eslint-disable no-underscore-dangle */
         window.g_app._store.dispatch({ type: 'tonpalgs/logout' });
@@ -69,8 +69,8 @@ const request = extend({
 /** 拦截响应判断登录状态 */
 request.interceptors.response.use(async (res) => {
     const data = await res.clone().json();
-    if (data.code == 404) {
-        window.location.href = '/login.shtml';
+    if (data.code === 404) {
+        window.location.href = '/Login.shtml';
         return {};
     }
     return res;

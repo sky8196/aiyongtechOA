@@ -106,9 +106,7 @@ export async function pushToMyCustomerService({ UID, idArray }) {
 /**
  * searchCustomerService [模糊查询]
  * @author zhuoyue
- * @param array parames [需要修改的id]
- * @param array idArray [需要修改的id]
- * @param array idArray [需要修改的id]
+ * @param array parames [查询的内容]
  */
 export async function searchCustomerService(parames) {
     return request('/api', {

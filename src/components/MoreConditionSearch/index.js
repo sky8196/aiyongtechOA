@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Button, Input, Select, Tooltip, message, DatePicker } from 'antd';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
-import { searchCustomerService } from '@/services/customerList';
+import { getCustomerListService, searchCustomerService } from '@/services/customerList';
 
 
 const { RangePicker } = DatePicker;
@@ -54,7 +54,14 @@ class MoreConditionSearch extends React.Component {
         let data = [];
         const { searchNameOrTelValue, selectValue, dateValueString } = this.state;
         if (searchNameOrTelValue === '' && dateValueString === '' && selectValue === 'none') {
-            message.warning('请输入至少一个条件');
+            if (link === '/myCustomer') {
+                const response = await getCustomerListService(UID);
+                data = response.result;
+            } else {
+                const response = await getCustomerListService();
+                data = response.result;
+            }
+            updateDataSource(data);
             return;
         }
         let parames = { searchNameOrTelValue, selectValue, dateValueString };
@@ -63,7 +70,6 @@ class MoreConditionSearch extends React.Component {
         }
         const response = await searchCustomerService(parames);
         if (response === undefined || response.code === 403 || response.result.length === 0) {
-            message.error('获取失败或没有数据');
             updateDataSource([]);
         } else {
             message.success('查询成功');

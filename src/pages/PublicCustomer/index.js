@@ -20,7 +20,7 @@ class PublicCustomer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rootPower: '29', // root权限控制
+            rootPower: '2', // root权限控制
             dataSource: [],
             selectedRowKeys: [],
             columns: [],
@@ -34,7 +34,7 @@ class PublicCustomer extends React.Component {
 
     /** 异步请求数据 */
     async getPublicCustomer() {
-        const { UID } = this.props;
+        const { UID, authorityState } = this.props;
         const { rootPower } = this.state;
         const data = await this.getDataSource();
         const columns = [
@@ -99,7 +99,7 @@ class PublicCustomer extends React.Component {
             {
                 title: '操作',
                 dataIndex: 'id',
-                render: (id, record) => (UID !== rootPower ? (
+                render: (id, record) => (authorityState !== rootPower ? (
                     <span>
                         <span
                             className="blueText"
@@ -151,7 +151,6 @@ class PublicCustomer extends React.Component {
         const response = await getCustomerListService();
         let data = [];
         if (response === undefined || response.code === 403 || response.code === 404) {
-            message.error('获取失败或没有数据');
             return data;
         }
         data = response.result;
@@ -262,6 +261,6 @@ class PublicCustomer extends React.Component {
         );
     }
 }
-PublicCustomer.defaultProps = { UID: 0, match: '' };
-PublicCustomer.propTypes = { UID: PropTypes.any, match: PropTypes.any };
-export default connect(({ login: { UID } }) => ({ UID }))(PublicCustomer);
+PublicCustomer.defaultProps = { UID: 0, match: '', authorityState: '' };
+PublicCustomer.propTypes = { UID: PropTypes.any, match: PropTypes.any, authorityState: PropTypes.any };
+export default connect(({ login: { UID, authorityState } }) => ({ UID, authorityState }))(PublicCustomer);

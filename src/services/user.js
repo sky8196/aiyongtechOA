@@ -21,17 +21,15 @@ export async function loginOAService({ phonenumber, password }) {
  * modifyPasswordOAService [修改密码]
  * @author zhuoyue
  * @param {String} phonenumber [手机号]
- * @param {String} password [密码]
  * @param {String} newPassword [新密码]
  */
-export async function modifyPasswordOAService({ phonenumber, password, newPassword, verificationCode }) {
+export async function modifyPasswordOAService({ phonenumber, newPassword, verificationCode }) {
     return request('/api', {
         method: 'POST',
         data: {
             method: 'aiyong.tonpaladmin.newoa.modifypasswordoa',
             namespace: 'ss',
             phonenumber,
-            password,
             newPassword,
             verificationCode,
         },

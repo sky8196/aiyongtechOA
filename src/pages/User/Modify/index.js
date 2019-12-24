@@ -1,6 +1,7 @@
 import React from 'react';
 import { Input, Button, message } from 'antd';
 import router from 'umi/router';
+import Link from 'umi/link';
 import { modifyPasswordOAService, verificationCodeOAService } from '@/services/user';
 import './index.scss';
 
@@ -12,7 +13,6 @@ class Modify extends React.Component {
         this.state = {
             loading: false,
             phonenumber: '',
-            password: '',
             newPassword: '',
             onceNewPassword: '',
             buttonValue: '发送验证码',
@@ -56,15 +56,15 @@ class Modify extends React.Component {
     };
 
     enterLoading = () => {
-        const { phonenumber, password, newPassword, onceNewPassword, verificationCode } = this.state;
-        if (phonenumber === '' || password === '' || newPassword === '' || onceNewPassword === '' || verificationCode === '') {
+        const { phonenumber, newPassword, onceNewPassword, verificationCode } = this.state;
+        if (phonenumber === '' || newPassword === '' || onceNewPassword === '' || verificationCode === '') {
             message.warning('手机号、密码、验证码不能为空');
         } else {
             this.setState({ loading: true }, async () => {
                 if (newPassword !== onceNewPassword) {
                     message.warning('二次新密码不一致');
                 } else {
-                    const response = await modifyPasswordOAService({ phonenumber, password, newPassword, verificationCode });
+                    const response = await modifyPasswordOAService({ phonenumber, newPassword, verificationCode });
                     this.setState({ loading: false }, () => {
                         if (response === undefined || response.code === 403) {
                             message.warning(`${response.msg}`);
@@ -91,18 +91,20 @@ class Modify extends React.Component {
                 <div className="modify-img"><img src="https://q.aiyongbao.com/ft/public/img/logo_dark.png" alt="" /></div>
                 <div className="modify-box">
                     <p>外贸通宝客保系统-修改密码</p>
-                    <div>
+                    <div className="modify-main">
                         <Input placeholder="请输入手机号" name="phonenumber" onChange={this.getValue} />
-                        <Input.Password placeholder="请输入原密码" name="password" onChange={this.getValue} />
                         <Input.Password placeholder="请输入新密码" name="newPassword" onChange={this.getValue} />
                         <Input.Password placeholder="请再次新密码" name="onceNewPassword" onChange={this.getValue} />
                         <div className="verificationCode">
                             <Input placeholder="请输入验证码" disabled={codeState} name="verificationCode" onChange={this.getValue} />
                             <Button onClick={this.enterVerificationCode}>{buttonValue}</Button>
                         </div>
-                        <Button type="primary" loading={this.state.loading} onClick={this.enterLoading}>
-                            确认修改
-                        </Button>
+                        <div className="button-box">
+                            <Button type="primary" loading={this.state.loading} onClick={this.enterLoading}>
+                                确认修改
+                            </Button>
+                            <Link to="/user/login">返回登入</Link>
+                        </div>
                     </div>
                 </div>
             </div>

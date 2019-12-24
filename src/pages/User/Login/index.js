@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import router from 'umi/router';
+import Link from 'umi/link';
 import { Input, Button, message } from 'antd';
 import { loginOAService } from '@/services/user';
 import './index.scss';
@@ -61,12 +62,15 @@ class Login extends React.Component {
                 <div className="login-img"><img src="https://q.aiyongbao.com/ft/public/img/logo_dark.png" alt="" /></div>
                 <div className="login-box">
                     <p>外贸通宝客保系统</p>
-                    <div>
+                    <div className="login-main">
                         <Input placeholder="请输入手机号" onChange={this.getPhonenumber} />
                         <Input.Password placeholder="请输入密码" onChange={this.getPassword} />
-                        <Button type="primary" loading={this.state.loading} onClick={this.enterLoading}>
-                            登入
-                        </Button>
+                        <div className="button-box">
+                            <Button type="primary" loading={this.state.loading} onClick={this.enterLoading}>
+                                登入
+                            </Button>
+                            <Link to="/user/modify">忘记密码</Link>
+                        </div>
                     </div>
                 </div>
             </div>

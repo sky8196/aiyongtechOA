@@ -22,7 +22,7 @@ export default [
         routes: [
             {
                 path: '/',
-                redirect: '/customerList',
+                redirect: '/myCustomer',
                 authority: ['admin', 'user'],
             },
             {

@@ -70,7 +70,7 @@ const request = extend({
 request.interceptors.response.use(async (res) => {
     const data = await res.clone().json();
     if (data.code === 404) {
-        window.location.href = '/Login.shtml';
+        router.push('/user/login');
         return {};
     }
     return res;

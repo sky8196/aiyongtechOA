@@ -35,6 +35,7 @@ class Modify extends React.Component {
                 return;
             }
             const response = await verificationCodeOAService({ phonenumber });
+            console.log(response);
             if (response === undefined || response.code === 403) {
                 message.error('发送失败,请检查手机号是否正确');
             } else if (response.code === 200) {

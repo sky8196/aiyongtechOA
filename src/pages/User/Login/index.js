@@ -27,7 +27,7 @@ class Login extends React.Component {
         } else {
             this.setState({ loading: true }, async () => {
                 const response = await loginOAService({ phonenumber, password });
-                if (response.code === 403) {
+                if (response === undefined || response.code === 403) {
                     message.warning('手机号或密码错误');
                     this.setState({ loading: false });
                 } else if (response.code === 200) {

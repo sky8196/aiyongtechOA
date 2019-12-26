@@ -47,14 +47,25 @@ class AddNewPrivateCustomer extends React.Component {
             this.setState({
                 hasFeedback: false,
                 validateStatus: 'success',
-                help: '该名称可用',
+                help: '该客户未客保',
                 registerName: true,
             });
         } else {
+            const { presentState } = response;
+            let lsString = '该客户已存在';
+            if (presentState === '0') {
+                lsString = '已客保，未处理';
+            } else if (presentState === '1') {
+                lsString = '已客保，已沟通';
+            } else if (presentState === '2') {
+                lsString = '已客保，已拜访';
+            } else if (presentState === '3') {
+                lsString = '已签单';
+            }
             this.setState({
                 hasFeedback: true,
                 validateStatus: 'error',
-                help: '该名称已存在',
+                help: lsString,
                 registerName: false,
             });
         }

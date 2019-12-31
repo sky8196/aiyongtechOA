@@ -1,0 +1,16 @@
+.logout {
+    height: 100%;
+    width: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    span{
+        display: block;
+        height: 24px;
+        color: #666;
+        cursor: pointer;
+    }
+    &:hover span{
+        color: #2280FB;
+    }
+}

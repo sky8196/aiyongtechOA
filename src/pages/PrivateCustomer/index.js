@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import PropTypes from 'prop-types';
-import { Button, Input, Table, Empty, Divider, Select, Modal, message } from 'antd';
+import { Button, Input, Table, Divider, Select, Modal, message } from 'antd';
 
 import moment from 'moment';
 // import 'moment/locale/zh-cn';
@@ -50,10 +50,10 @@ class PrivateCustomer extends React.Component {
         if (id === 0) { return []; }
         const response = await getCustomerListService(id);
         let data = [];
-        if (response === undefined || response.code === 403) {
+        if (response.code === 200) {
+            data = response.result;
             return data;
         }
-        data = response.result;
         return data;
     };
 
@@ -262,7 +262,7 @@ class PrivateCustomer extends React.Component {
                         <span
                             className="blueText"
                             onClick={() => {
-                                router.push(`/myCustomer/${id}`);
+                                router.push(`/privateCustomer/${id}`);
                             }}
                             style={{ cursor: 'pointer' }}
                         >
@@ -282,7 +282,7 @@ class PrivateCustomer extends React.Component {
                         <span
                             className="blueText"
                             onClick={() => {
-                                router.push(`/myCustomer/${id}`);
+                                router.push(`/privateCustomer/${id}`);
                             }}
                             style={{ cursor: 'pointer' }}
                         >
@@ -336,24 +336,20 @@ class PrivateCustomer extends React.Component {
                     </div>
                 </div>
                 <div id="main">
-                    {dataSource.length === 0 ? (
-                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                    ) : (
-                        <Table
-                            rowKey="id"
-                            rowSelection={rowSelection}
-                            columns={columns}
-                            dataSource={dataSource}
-                            footer={() => (
-                                <span>
-                                    {' '}
-                                    共
-                                    {dataSource.length}
-                                    条数据，当前页最多展示10条
-                                </span>
-                            )}
-                        />
-                    )}
+                    <Table
+                        rowKey="id"
+                        rowSelection={rowSelection}
+                        columns={columns}
+                        dataSource={dataSource}
+                        footer={() => (
+                            <span>
+                                {' '}
+                                共
+                                {dataSource.length}
+                                条数据，当前页最多展示10条
+                            </span>
+                        )}
+                    />
                 </div>
                 <Modal
                     title="备注"

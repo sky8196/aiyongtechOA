@@ -2,7 +2,7 @@ import React from 'react';
 import { Input, Button, message } from 'antd';
 import router from 'umi/router';
 import Link from 'umi/link';
-import { modifyPasswordOAService, verificationCodeOAService } from '@/services/user';
+import { modifyPasswordOAAction, verificationCodeOAAction } from '@/services/user';
 import './index.scss';
 
 /** Modify */
@@ -34,7 +34,7 @@ class Modify extends React.Component {
                 message.warning('请输入正确的手机号');
                 return;
             }
-            const response = await verificationCodeOAService({ phonenumber });
+            const response = await verificationCodeOAAction({ phonenumber });
             console.log(response);
             if (response === undefined || response.code === 403) {
                 message.error('发送失败,请检查手机号是否正确');
@@ -65,7 +65,7 @@ class Modify extends React.Component {
                 if (newPassword !== onceNewPassword) {
                     message.warning('二次新密码不一致');
                 } else {
-                    const response = await modifyPasswordOAService({ phonenumber, newPassword, verificationCode });
+                    const response = await modifyPasswordOAAction({ phonenumber, newPassword, verificationCode });
                     this.setState({ loading: false }, () => {
                         if (response === undefined || response.code === 403) {
                             message.warning(`${response.msg}`);

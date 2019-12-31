@@ -6,7 +6,7 @@ import request from '@/utils/request';
  * @param {String} phonenumber [手机号]
  * @param {String} password [密码]
  */
-export async function loginOAService({ phonenumber, password }) {
+export async function loginCustomerProtectionAction({ phonenumber, password }) {
     return request('/login/loginCustomerProtection', {
         method: 'POST',
         data: {
@@ -16,13 +16,13 @@ export async function loginOAService({ phonenumber, password }) {
     });
 }
 /**
- * modifyPasswordOA [修改密码]
+ * modifyPasswordOAAction [修改密码]
  * @author zhuoyue
  * @param {String} phonenumber [手机号]
  * @param {String} newPassword [新密码]
  */
-export async function modifyPasswordOAService({ phonenumber, newPassword, verificationCode }) {
-    return request('/login/modifyPasswordOA', {
+export async function modifyPasswordOAAction({ phonenumber, newPassword, verificationCode }) {
+    return request('/login/modifyPasswordOAAction', {
         method: 'POST',
         data: {
             phonenumber,
@@ -32,13 +32,26 @@ export async function modifyPasswordOAService({ phonenumber, newPassword, verifi
     });
 }
 /**
- * verificationCodeOA [获取验证码]
+ * verificationCodeOAAction [获取验证码]
  * @author zhuoyue
  * @param {String} phonenumber [手机号]
  */
-export async function verificationCodeOAService({ phonenumber }) {
-    return request('/login/verificationCodeOA', {
+export async function verificationCodeOAAction({ phonenumber }) {
+    return request('/login/verificationCodeOAAction', {
         method: 'POST',
         data: { phonenumber },
+    });
+}
+/**
+ * logoutOAServices [退出登入]
+ * @author zhuoyue
+ * */
+export async function logoutOAServices() {
+    return request('/api', {
+        method: 'POST',
+        data: {
+            method: 'aiyong.tonpaladmin.newoa.logoutoa',
+            namespace: 'ss',
+        },
     });
 }

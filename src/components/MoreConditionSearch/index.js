@@ -54,7 +54,7 @@ class MoreConditionSearch extends React.Component {
         let data = [];
         const { searchNameOrTelValue, selectValue, dateValueString } = this.state;
         if (searchNameOrTelValue === '' && dateValueString === '' && selectValue === 'none') {
-            if (link === '/myCustomer') {
+            if (link === '/privateCustomer') {
                 const response = await getCustomerListService(UID);
                 data = response.result;
             } else {
@@ -65,7 +65,7 @@ class MoreConditionSearch extends React.Component {
             return;
         }
         let parames = { searchNameOrTelValue, selectValue, dateValueString };
-        if (link === '/myCustomer') {
+        if (link === '/privateCustomer') {
             parames = Object.assign(parames, { UID });
         }
         const response = await searchCustomerService(parames);

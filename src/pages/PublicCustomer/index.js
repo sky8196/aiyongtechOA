@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Table, Empty, Divider, message, Modal } from 'antd';
+import { Button, Divider, message, Modal, Table } from 'antd';
 import router from 'umi/router';
 import { connect } from 'dva';
 import PropTypes from 'prop-types';
@@ -9,6 +9,7 @@ import 'moment/locale/zh-cn';
 import { getCustomerListService, pushToMyCustomerService } from '@/services/customerList';
 import MoreConditionSearch from '@/components/MoreConditionSearch';
 import UpdateCustomer from '@/components/UpdateCustomer';
+// import CustomerTableList from '@/components/CustomerTableList';
 import { tableUpdateDataProcessing, deleteCustomer } from '@/utils/customerGlobal';
 
 moment.locale('zh-cn');
@@ -238,24 +239,20 @@ class PublicCustomer extends React.Component {
                     </div>
                 </div>
                 <div id="main">
-                    {dataSource.length === 0 ? (
-                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                    ) : (
-                        <Table
-                            rowKey="id"
-                            rowSelection={rowSelection}
-                            columns={columns}
-                            dataSource={dataSource}
-                            footer={() => (
-                                <span>
-                                    {' '}
-                                    共
-                                    {dataSource.length}
-                                    条数据，当前页最多展示10条
-                                </span>
-                            )}
-                        />
-                    )}
+                    <Table
+                        rowKey="id"
+                        rowSelection={rowSelection}
+                        columns={columns}
+                        dataSource={dataSource}
+                        footer={() => (
+                            <span>
+                                {' '}
+                                共
+                                {dataSource.length}
+                                条数据，当前页最多展示10条
+                            </span>
+                        )}
+                    />
                 </div>
             </div>
         );

@@ -65,7 +65,7 @@ export function emptyOrBlank(object, key, defaultValue = '', isJson = false) {
  * 存储 Session
  */
 export function setSession(name, content) {
-    if (this.isEmpty(name)) return false;
+    if (isEmpty(name)) return false;
     if (typeof content !== 'string') {
         return window.sessionStorage.setItem(name, JSON.stringify(content));
     }

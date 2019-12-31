@@ -13,7 +13,7 @@ const config = {
             antd: true,
             dva: true,
             dynamicImport: false,
-            title: '新OA',
+            title: '客保系统',
             dll: false,
 
             routes: {

@@ -4,8 +4,9 @@ import { connect } from 'dva';
 import router from 'umi/router';
 import Link from 'umi/link';
 import { Input, Button, message } from 'antd';
-import { loginOAService } from '@/services/user';
+import { loginCustomerProtectionAction } from '@/services/user';
 import './index.scss';
+import { setSession } from '@/utils/common';
 
 /** Login */
 class Login extends React.Component {
@@ -26,7 +27,7 @@ class Login extends React.Component {
             message.warning('请输入手机号或密码');
         } else {
             this.setState({ loading: true }, async () => {
-                const response = await loginOAService({ phonenumber, password });
+                const response = await loginCustomerProtectionAction({ phonenumber, password });
                 if (response === undefined || response.code === 403) {
                     message.warning('手机号或密码错误');
                     this.setState({ loading: false });
@@ -38,6 +39,7 @@ class Login extends React.Component {
                     } else {
                         dispatch({ type: 'login/setLoginState', payload: { id, name, authorityState } });
                         this.setState({ loading: false }, () => {
+                            setSession('customerProtectionLogin', { id, name, authorityState });
                             message.success('登入成功');
                             router.push('/');
                         });

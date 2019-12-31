@@ -1,27 +1,49 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import router from 'umi/router';
-
 import '../assets/css/public.css';
 import Header from './Header';
+import { getSession } from '@/utils/common';
 
 /** 页面入口 */
-const BasicLayout = ({ location: { pathname }, children, login }) => {
-    useEffect(() => {
-        const { authorityState } = login;
-        if (authorityState === '') {
+class BasicLayout extends React.Component {
+    /** */
+    constructor(props) {
+        super(props);
+        this.state = {};
+        if (this.checkLoginSession()) {
             router.push('/user/login');
         }
-    });
-    return (
-        <div>
-            <Header pathname={pathname} />
-            <div className="router-box">{children}</div>
-        </div>
-    );
-};
-BasicLayout.defaultProps = { location: '', children: '', login: '' };
-BasicLayout.propTypes = { location: PropTypes.any, children: PropTypes.any, login: PropTypes.any };
+    }
+
+    /** */
+    checkLoginSession = () => {
+        const { dispatch } = this.props;
+        let customerProtectionLogin = getSession('customerProtectionLogin');
+        if (customerProtectionLogin !== '') {
+            customerProtectionLogin = JSON.parse(customerProtectionLogin);
+            const { id, name, authorityState } = customerProtectionLogin;
+            dispatch({ type: 'login/setLoginState', payload: { id, name, authorityState } });
+            return false;
+        }
+        return true;
+    };
+
+    /** */
+    render() {
+        const { location: { pathname }, children } = this.props;
+        return (
+            <>
+                <Header pathname={pathname} />
+                <div className="router-box">{children}</div>
+            </>
+        );
+    }
+}
+
+
+BasicLayout.defaultProps = { location: '', children: '', dispatch: '' };
+BasicLayout.propTypes = { location: PropTypes.any, children: PropTypes.any, dispatch: PropTypes.any };
 
 export default connect(({ login }) => ({ login }))(BasicLayout);
